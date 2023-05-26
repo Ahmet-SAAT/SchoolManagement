@@ -1,6 +1,7 @@
 package com.schoolmanagement.service;
 
 import com.schoolmanagement.Utils.Messages;
+import com.schoolmanagement.controller.ContactMessageController;
 import com.schoolmanagement.entity.concretes.ContactMessage;
 import com.schoolmanagement.exception.ConflictException;
 import com.schoolmanagement.payload.request.ContactMessageRequest;
@@ -9,6 +10,7 @@ import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.repository.ContactMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +26,8 @@ import static com.schoolmanagement.Utils.Messages.ALREADY_SEND_A_MESSAGE_TODAY;
 @Service
 @RequiredArgsConstructor//final olan fieldlaran cons olustu
 public class ContactMessageService {
-    @Autowired
-    private ContactMessage contactMessage;
+
+
 
     private final ContactMessageRepository contactMessageRepository;//cons olustu
 
@@ -86,12 +88,14 @@ public class ContactMessageService {
     }
 
     //DTO Pojo donusumu icin yardimci method
+
     private ContactMessage createObject(ContactMessageRequest contactMessageRequest) {
      /*   contactMessage.setMessage(contactMessageRequest.getMessage());
         contactMessage.setEmail(contactMessageRequest.getEmail());
         contactMessage.setName(contactMessageRequest.getName());
         contactMessage.setSubject(contactMessageRequest.getSubject());*///boyle yapmistim ama builder ile daha clean
-        return contactMessage.builder().
+
+        return ContactMessage.builder().
                 name(contactMessageRequest.getName())
                 .subject(contactMessageRequest.getSubject())
                 .email(contactMessageRequest.getEmail())

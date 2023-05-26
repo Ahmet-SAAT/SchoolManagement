@@ -50,7 +50,7 @@ public class ContactMessageController {
 
 
     //NOT-->SearchBySubject()***********************************
-    @GetMapping("/searchByEmail")
+    @GetMapping("/searchBySubject")
     public Page<ContactMessageResponse> searchBySubject(@RequestParam(value = "subject") String subject,
                                                         @RequestParam(value = "page", defaultValue = "0") int page,
                                                         @RequestParam(value = "size", defaultValue = "10") int size,
