@@ -21,7 +21,7 @@ public class ContactMessageController {
     //Not: save() *********************************************************************************************************************************
     @PostMapping("/save")
     public ResponseMessage<ContactMessageResponse> save(@Valid @RequestBody ContactMessageRequest contactMessageRequest) {
-
+//bana gelen requesti contactmessagerequeste mapladik
         return contactMessageService.save(contactMessageRequest);
 
     }

@@ -1,5 +1,4 @@
 package com.schoolmanagement.entity.concretes;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.schoolmanagement.entity.enums.Day;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Set;
 
 @Entity
@@ -22,19 +21,19 @@ public class LessonProgram implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private Day day;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "US")
-    private LocalDateTime startTime;
+    private LocalTime startTime;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "US")
-    private LocalDateTime stopTime;
+    private LocalTime stopTime;
 
     @ManyToMany
-    private Set<Lesson> lessons;
+    private Set<Lesson> lesson;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private EducationTerm educationTerm;
@@ -47,5 +46,16 @@ public class LessonProgram implements Serializable {
     @ManyToMany(mappedBy = "lessonsProgramList", fetch = FetchType.EAGER)
     private Set<Student> students;
 
-    //!!! @PreRemove yazilacak
+    @PreRemove
+    private void removeLessonProgramFromStudent(){
+        teachers.forEach((t)->{
+            t.getLessonsProgramList().remove(this);//bu metodun calismasini hangi field olusturuyorsa onu koy
+        });
+
+        students.forEach((s)->{
+            s.getLessonsProgramList().remove(this);
+        });
+    }
+
 }
+

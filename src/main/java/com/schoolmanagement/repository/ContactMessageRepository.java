@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public interface ContactMessageRepository extends JpaRepository<ContactMessage, Long> {
 
     boolean existsByEmailEqualsAndDateEquals(String email, LocalDate now);
+    //email ve date bilgisi paremetrelerdei esit olan bir veri var mi
 
     //Page<ContactMessageResponse> degil POJO dönüs olmali
     Page<ContactMessage> findByEmailEquals(String email, Pageable pageable);

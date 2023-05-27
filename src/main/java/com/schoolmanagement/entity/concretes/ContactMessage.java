@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder(toBuilder = true) //yeni bir nesne olusturmak yerine varolan nesnenin kopyasini alarak degisikligi yapmamizi saglar
 public class ContactMessage implements Serializable {
-
+//Best practicede entity claslarinin serializable classini implements etmesi istenir.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
