@@ -4,10 +4,9 @@ import com.schoolmanagement.entity.abstracts.User;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -15,10 +14,12 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true)
+@ToString
 public class Teacher extends User {
 
-    @OneToOne(mappedBy = "teacher",cascade = CascadeType.PERSIST,orphanRemoval = true)
+    @OneToOne(mappedBy = "teacher", cascade = CascadeType.PERSIST,orphanRemoval = true)
+    //cascade = CascadeType.PERSIST --> biri kaydedilince, digeri de otomatik DB ye kaydediliyor
+    //orphanRemoval = true --> biri silinince digerini de sil
     private AdvisorTeacher advisorTeacher;
 
     @Column(name = "isAdvisor")
@@ -27,6 +28,15 @@ public class Teacher extends User {
     @Column(unique = true)
     private String email;
 
-    //!!!StudentInfo,
+    //!!! StudentInfo, LessonProgram
+    @OneToMany(mappedBy = "teacher",cascade = CascadeType.REMOVE)
+    private List<StudentInfo> studentInfos;
 
+    @ManyToMany
+    @JoinTable(
+            name = "teacher_lesson_program",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "lesson_program_id")
+    )
+    private Set<LessonProgram> lessonProgramList;
 }

@@ -1,6 +1,5 @@
 package com.schoolmanagement.entity.concretes;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,12 +16,10 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder = true)//yeni bir nesne olusturmak yerine var olan nesnenin kopyasini alarak
-// degisiklik yapmamizi saglar
-
-public class ContactMessage implements Serializable {//nicin serializable yaptim
+@AllArgsConstructor
+@Builder(toBuilder = true) //yeni bir nesne olusturmak yerine varolan nesnenin kopyasini alarak degisikligi yapmamizi saglar
+public class ContactMessage implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,16 +27,17 @@ public class ContactMessage implements Serializable {//nicin serializable yaptim
 
     @NotNull
     private String name;
+
     @NotNull
     private String email;
+
     @NotNull
-    private String subject;
+    private  String subject;
+
     @NotNull
-    private String message;
+    private  String message;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
     private LocalDate date;
-
-
 
 }

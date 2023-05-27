@@ -7,14 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class StudentInfo {
-
+public class StudentInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +23,7 @@ public class StudentInfo {
     private Integer absentee;
 
     private Double midtermExam;
-
     private Double finalExam;
-
     private Double examAverage;
 
     private String infoNote;
@@ -39,6 +37,11 @@ public class StudentInfo {
     @Enumerated(EnumType.STRING)
     private Note letterGrade;
 
-    //!!lesson-educcation
+    //!!! Lesson - EducationTerm
+    @ManyToOne
+    private Lesson lesson;
+
+    @OneToOne
+    private EducationTerm educationTerm;
 
 }
