@@ -2,7 +2,7 @@ package com.schoolmanagement;
 
 import com.schoolmanagement.entity.enums.Gender;
 import com.schoolmanagement.entity.enums.RoleType;
-import com.schoolmanagement.payload.request.concretes.AdminRequest;
+import com.schoolmanagement.payload.request.AdminRequest;
 import com.schoolmanagement.service.AdminService;
 import com.schoolmanagement.service.UserRoleService;
 import org.springframework.boot.CommandLineRunner;
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class SchoolManagementApplication implements CommandLineRunner {
 
     private final UserRoleService userRoleService;
+
     private final AdminService adminService;
 
     public SchoolManagementApplication(UserRoleService userRoleService, AdminService adminService) {
@@ -27,9 +28,10 @@ public class SchoolManagementApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {//uygulama basladiginda otomatik calismasini istedigim metodlar
-         //1-rol tablomu dolduracagim
-        if (userRoleService.getAllUserRole().size()==0){
+    public void run(String... args) throws Exception {
+
+        // !!! Role tablomu dolduracagim
+        if(userRoleService.getAllUserRole().size()==0) {
             userRoleService.save(RoleType.ADMIN);
             userRoleService.save(RoleType.MANAGER);
             userRoleService.save(RoleType.ASSISTANTMANAGER);
@@ -39,9 +41,7 @@ public class SchoolManagementApplication implements CommandLineRunner {
             userRoleService.save(RoleType.GUESTUSER);
         }
 
-
-        //build in olan bir admin olusturulacak
-
+        //!!! Admin olusturulacak  built_in
         if(adminService.countAllAdmin()==0) {
             AdminRequest admin = new AdminRequest();
             admin.setUsername("Admin");
@@ -55,10 +55,6 @@ public class SchoolManagementApplication implements CommandLineRunner {
             admin.setBirthPlace("US");
             adminService.save(admin);
         }
-
-
-
-
 
     }
 }

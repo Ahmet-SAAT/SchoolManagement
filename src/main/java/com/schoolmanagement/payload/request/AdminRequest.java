@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.request.concretes;
+package com.schoolmanagement.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.schoolmanagement.payload.request.abstracts.BaseUserRequest;

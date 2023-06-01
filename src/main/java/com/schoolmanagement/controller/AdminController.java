@@ -1,7 +1,7 @@
 package com.schoolmanagement.controller;
 
 import com.schoolmanagement.entity.concretes.Admin;
-import com.schoolmanagement.payload.request.concretes.AdminRequest;
+import com.schoolmanagement.payload.request.AdminRequest;
 import com.schoolmanagement.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
