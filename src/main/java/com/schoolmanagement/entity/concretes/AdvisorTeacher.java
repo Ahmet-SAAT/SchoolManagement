@@ -34,3 +34,9 @@ public class AdvisorTeacher implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Meet> meets;
 }
+/*
+    @Builder anotasyon eklenen class için bir Builder DPattern oluşturuyor. Default da toBuilder özelliği false.
+
+        Builder neseyi Örnek örnek = Örnek.özellik1().özellik2().build gibi build etmeye yararken,
+        toBuilder olan bir nesnenin üzerinden farklı bir nesne yapmaya yarıyor.
+        Örnek yeni örnek = örnek.toBuilder().özellik1(farklı bir özellik).build*/

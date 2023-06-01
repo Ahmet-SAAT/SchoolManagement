@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @SuperBuilder
-@MappedSuperclass//tablo olusturmadan anac class yaptik
+//@MappedSuperclass//tablo olusturmadan anac class yaptik.Ama dbdeb cliente gidecek buna gerek yok
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

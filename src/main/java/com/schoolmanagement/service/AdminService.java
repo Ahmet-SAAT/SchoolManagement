@@ -9,10 +9,15 @@ import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.repository.*;
 import com.schoolmanagement.utils.Messages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class AdminService {
     private final TeacherRepository teacherRepository;
     private final GuestUserRepository guestUserRepository;
     private final UserRoleService userRoleService;
+    private final PasswordEncoder passwordEncoder;
 
 
     //save()**********************************
@@ -37,7 +43,8 @@ public class AdminService {
 
      //admin rolu veriliyor
      admin.setUserRole(userRoleService.getUserRole(RoleType.ADMIN));
-// TODO: 5/27/2023  //NOT:password plain text encode edilecek.Security yapilirken
+     //password encode ediliyor
+     admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 
 
         Admin savedData=adminRepository.save(admin);
@@ -76,6 +83,27 @@ public class AdminService {
 
       }
 
+        /*// burada amac BaseReposiyory sinifini JpaRepositoryden extend edip, ana repository lerime JPA ozelligini kazandirmak
+
+        public interface BaseRepository<T, ID> extends JpaRepository<T, ID> {
+            boolean existsByUsername(String username);
+            boolean existsBySsn(String ssn);
+            boolean existsByPhoneNumber(String phoneNumber);
+        }
+        @Repository
+        public interface AdminRepository extends BaseRepository<Admin, Long> {
+            // Diğer metotlar...
+        }
+
+        @Repository
+        public interface DeanRepository extends BaseRepository<Dean, Long> {
+            // Diğer metotlar...
+        }*/
+
+
+
+
+
 
     }
 
@@ -105,6 +133,40 @@ public class AdminService {
                 .ssn(admin.getSsn()).build();
     }
 
+    public Page<Admin> getAllAdmin(Pageable pageable) {
+        return adminRepository.findAll(pageable);
+    }
+
+    // Not: delete() *******************************************************
+    public String deleteAdmin(Long id) {
+
+        Optional<Admin> admin = adminRepository.findById(id);
+
+        if(admin.isPresent() && admin.get().isBuilt_in()) {
+            throw new ConflictException(Messages.NOT_PERMITTED_METHOD_MESSAGE);
+        }
+
+        if(admin.isPresent()) {
+            adminRepository.deleteById(id);
+
+            return "Admin is deleted Successfully";
+        }
+
+        return Messages.NOT_FOUND_USER_MESSAGE;
+    }
+
+    // !!! Runner tarafi icin yazildi
+    public long countAllAdmin() {
+
+        return adminRepository.count();
+    }
+
+
+
+
+    /*@SuperBuilder --> ilgili sinifin field'larini bu classdan türetilen siniflara aktarirken (sadece java tarafinda)
+    @MappedSuperclass --> annotation'u da db de table olusturmamasina ragmen türettigi entitylere field'larini aktariyor
+    ve türetilen entity siniflarinin db de kolonlarinin olusmasini sagliyor*/
 
 
 }

@@ -1,15 +1,19 @@
 package com.schoolmanagement.controller;
 
+import com.schoolmanagement.entity.concretes.Admin;
 import com.schoolmanagement.payload.request.concretes.AdminRequest;
 import com.schoolmanagement.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("admin")
@@ -26,14 +30,36 @@ public class AdminController {
    }
 
 
+    // Not: getALL()********************************************************
+    @GetMapping("/getAll")
+    public ResponseEntity<Page<Admin>> getAll(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "name") String sort,
+            @RequestParam(value = "type", defaultValue = "desc") String type
+    ) {
 
-    // Not:getAll()****************************************************
+        // pageable obje olusturulmasi servis katinda yapilabilir
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
+
+        if(Objects.equals(type, "desc")) {
+            pageable = PageRequest.of(page,size,Sort.by(sort).descending());
+        }
+
+        Page<Admin> author = adminService.getAllAdmin(pageable);
+        return new ResponseEntity<>(author, HttpStatus.OK);
+    }
 
 
 
 
-    // Not:delete()****************************************************
+    // Not: delete() *******************************************************
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id){
 
+        return ResponseEntity.ok(adminService.deleteAdmin(id));
+
+    }
 
 
 
