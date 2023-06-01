@@ -26,9 +26,9 @@ public class JwtUtils {
     public String generateJwtToken(Authentication authentication) {
 
         //anlik olarak login islemi yapan kullanici bilgisi :
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-        // username bilgisi ile JWT token uretiliyor
+         // username bilgisi ile JWT token uretiliyor
         return  generateTokenFromUsername(userPrincipal.getUsername());
 
     }
@@ -42,6 +42,9 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
+
+
 
     // Not: Validate JWT *************************************************
     public boolean validateJwtToken(String authToken){

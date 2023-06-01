@@ -26,7 +26,7 @@ public class EducationTerm implements Serializable {
     private Long id;
 
     @NotNull(message = "Education Term must not be empty")
-    // @Enumerated(EnumType.STRING) // !!! bu kisim kaldirilacak
+   // @Enumerated(EnumType.STRING)
     private Term term;
 
     @NotNull(message ="Start Date must not be empty")
@@ -43,6 +43,7 @@ public class EducationTerm implements Serializable {
     @Column(name="last_registration_date")
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate lastRegistrationDate;
+
 
     @OneToMany(mappedBy = "educationTerm", cascade = CascadeType.ALL)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

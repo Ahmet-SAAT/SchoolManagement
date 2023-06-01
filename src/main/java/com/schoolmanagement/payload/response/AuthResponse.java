@@ -1,21 +1,24 @@
 package com.schoolmanagement.payload.response;
 
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@JsonInclude(JsonInclude.Include.NON_NULL) // Json icindeki null olanlarin gozukmemesini sagliyoruz
+@JsonInclude(JsonInclude.Include.NON_NULL)//null olmayan veriler gonderilsin null olan gonderilmesin
+public class AuthResponse {
 
-public class ResponseMessage<E>{
+    private String username;
+    private String ssn;
+    private String role;
+    private String token;
+    private String name;
+    private String iAdvisor;
 
-    private E object ;
-    private String message;
-    private HttpStatus httpStatus;
 }

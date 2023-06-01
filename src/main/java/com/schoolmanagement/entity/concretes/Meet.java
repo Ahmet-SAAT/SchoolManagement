@@ -29,17 +29,17 @@ public class Meet implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm",timezone = "US")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "US")
     private LocalTime startTime;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm",timezone = "US")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "US")
     private LocalTime stopTime;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JsonIgnoreProperties({"teacher"})//clienta teacher gitmesin dedik
+    @JsonIgnoreProperties({"teacher"})
     private AdvisorTeacher advisorTeacher;
 
-
+    // !!! Kontrol edilecek
     //@ManyToMany(mappedBy = "meetList", fetch = FetchType.EAGER)
     @ManyToMany
     @JoinTable(

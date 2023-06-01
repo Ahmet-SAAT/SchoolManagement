@@ -16,28 +16,25 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true) //yeni bir nesne olusturmak yerine varolan nesnenin kopyasini alarak degisikligi yapmamizi saglar
+@NoArgsConstructor
+@Builder(toBuilder = true) // yeni bir nesne olusturmak yerine varolan nesnenin kopyasini alarak degisikli kyapmamizi saglar
 public class ContactMessage implements Serializable {
-//Best practicede entity claslarinin serializable classini implements etmesi istenir.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private String name;
-
+    private String name ;
     @NotNull
-    private String email;
-
+    private String email ;
     @NotNull
-    private  String subject;
-
+    private String subject ;
     @NotNull
-    private  String message;
+    private String message ;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
 
 }

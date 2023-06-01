@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,17 +29,17 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
-    private Collection<? extends GrantedAuthority> authorities;//consta bu yok.
+    private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String name, Boolean isAdvisor, String password,String role) {
+    public UserDetailsImpl(Long id, String username, String name, Boolean isAdvisor, String password, String role) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.isAdvisor = isAdvisor;
         this.password = password;
-        List<GrantedAuthority> grantedAuthorities=new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(role));//role bilgimi granted auteritye cevirdim
-        this.authorities=grantedAuthorities;
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(role));
+        this.authorities = grantedAuthorities;
     }
 
     @Override
@@ -78,14 +77,13 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-   public boolean equals(Object o){
-        if (this==o)//kendisi ile karsilastiriliyor
-            return true;
-        if (o==null || getClass()!=o.getClass())//get clas objenin fildlarini tek tek dolanir
+    public boolean equals(Object o) {
+        if(this == o) // kensisi ile karsilastiriliyor
+            return true ;
+        if( o== null || getClass() != o.getClass())
             return false;
-        UserDetailsImpl user=(UserDetailsImpl) o;
-        return Objects.equals(id,user.id);//id ile kiyaslama
-   }
-
+        UserDetailsImpl user = (UserDetailsImpl) o;
+        return Objects.equals(id, user.id); // id ile kiyaslama
+    }
 
 }

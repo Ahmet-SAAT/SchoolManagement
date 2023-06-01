@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class AuthEntryPointJwt implements AuthenticationEntryPoint {//401 hatasuni kisisellestidik
+public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
     // !!! Bu sinif, yetkilendirme hatasi durumunda islem yapilmasini sagliyor
 

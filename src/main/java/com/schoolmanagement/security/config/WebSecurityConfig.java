@@ -81,21 +81,21 @@ public class WebSecurityConfig {
             "/contactMessages/save",
             "/auth/login"
 
-};
+    };
 
-@Bean
-public WebMvcConfigurer corsConfigurer() {
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
 
-@Override
-public void addCorsMappings(CorsRegistry registry) {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
 
-        registry.addMapping("/**") // tum URL leri kapsayacagini soyledik
-        .allowedOrigins("*") // tum kaynaklara izin veriliyor
-        .allowedHeaders("*") // tum header lara izin verilecegini soyledik
-        .allowedMethods("*"); // butun HTTP methodlarina izin verildi
-        }
+                registry.addMapping("/**") // tum URL leri kapsayacagini soyledik
+                        .allowedOrigins("*") // tum kaynaklara izin veriliyor
+                        .allowedHeaders("*") // tum header lara izin verilecegini soyledik
+                        .allowedMethods("*"); // butun HTTP methodlarina izin verildi
+            }
         };
-        }
+    }
 
-        }
+}

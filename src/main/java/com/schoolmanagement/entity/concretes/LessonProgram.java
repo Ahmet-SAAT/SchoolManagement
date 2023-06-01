@@ -1,4 +1,5 @@
 package com.schoolmanagement.entity.concretes;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.schoolmanagement.entity.enums.Day;
@@ -49,7 +50,7 @@ public class LessonProgram implements Serializable {
     @PreRemove
     private void removeLessonProgramFromStudent(){
         teachers.forEach((t)->{
-            t.getLessonsProgramList().remove(this);//bu metodun calismasini hangi field olusturuyorsa onu koy
+            t.getLessonsProgramList().remove(this);
         });
 
         students.forEach((s)->{
@@ -58,4 +59,3 @@ public class LessonProgram implements Serializable {
     }
 
 }
-

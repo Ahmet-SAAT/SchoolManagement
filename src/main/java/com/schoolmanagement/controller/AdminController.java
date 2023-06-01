@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,17 +22,20 @@ import java.util.Objects;
 public class AdminController {
 
     private final AdminService adminService;
-    // Not: save() **************************************************
-   @PostMapping("/save")
-    public ResponseEntity<?> save(@Valid @RequestBody AdminRequest adminRequest){
 
-       return ResponseEntity.ok(adminService.save(adminRequest));
+    // Not: save()  *******************************************************
+    @PostMapping("/save")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<?> save(@RequestBody @Valid AdminRequest adminRequest){
 
-   }
+        return ResponseEntity.ok(adminService.save(adminRequest));
+
+    }
 
 
     // Not: getALL()********************************************************
     @GetMapping("/getAll")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Page<Admin>> getAll(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
@@ -51,16 +55,12 @@ public class AdminController {
     }
 
 
-
-
     // Not: delete() *******************************************************
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id){
 
         return ResponseEntity.ok(adminService.deleteAdmin(id));
 
     }
-
-
-
 }

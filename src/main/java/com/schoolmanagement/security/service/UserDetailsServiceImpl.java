@@ -45,7 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     false,
                     student.getPassword(),
                     student.getUserRole().getRoleType().name()
-            );
+                    );
         } else if(teacher!=null){
             return new UserDetailsImpl(teacher.getId(),
                     teacher.getUsername(),
@@ -74,9 +74,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     admin.getName(),
                     false,
                     admin.getPassword(),
-                    admin.getUserRole().getRoleType().name());
+                    admin.getUserRole().getRoleType().name()); //  RoleType.ADMIN.name()
         }
         throw new UsernameNotFoundException("User '" + username + "' not found");
-//securitynin kendi exceptionudur.Biz olusturmadk
     }
 }

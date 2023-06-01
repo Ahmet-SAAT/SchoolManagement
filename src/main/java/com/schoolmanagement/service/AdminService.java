@@ -1,6 +1,5 @@
 package com.schoolmanagement.service;
 
-
 import com.schoolmanagement.entity.concretes.Admin;
 import com.schoolmanagement.entity.enums.RoleType;
 import com.schoolmanagement.exception.ConflictException;
@@ -147,19 +146,19 @@ public class AdminService {
     // Not: delete() *******************************************************
     public String deleteAdmin(Long id) {
 
-        Optional<Admin> admin = adminRepository.findById(id);
+         Optional<Admin> admin = adminRepository.findById(id);
 
-        if(admin.isPresent() && admin.get().isBuilt_in()) {
-            throw new ConflictException(Messages.NOT_PERMITTED_METHOD_MESSAGE);
-        }
+         if(admin.isPresent() && admin.get().isBuilt_in()) {
+             throw new ConflictException(Messages.NOT_PERMITTED_METHOD_MESSAGE);
+         }
 
-        if(admin.isPresent()) {
-            adminRepository.deleteById(id);
+         if(admin.isPresent()) {
+             adminRepository.deleteById(id);
 
-            return "Admin is deleted Successfully";
-        }
+             return "Admin is deleted Successfully";
+         }
 
-        return Messages.NOT_FOUND_USER_MESSAGE;
+         return Messages.NOT_FOUND_USER_MESSAGE;
     }
 
     // !!! Runner tarafi icin yazildi
@@ -168,7 +167,3 @@ public class AdminService {
         return adminRepository.count();
     }
 }
-
-  /*@SuperBuilder --> ilgili sinifin field'larini bu classdan türetilen siniflara aktarirken (sadece java tarafinda)
-    @MappedSuperclass --> annotation'u da db de table olusturmamasina ragmen türettigi entitylere field'larini aktariyor
-    ve türetilen entity siniflarinin db de kolonlarinin olusmasini sagliyor*/

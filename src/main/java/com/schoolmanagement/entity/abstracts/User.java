@@ -10,15 +10,17 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.io.Serializable; //Best Practice olarak serilestirme entity siniflarina eklenir.
+import java.io.Serializable;
 import java.time.LocalDate;
 
-@MappedSuperclass //Db de user tablosu olusmadan bu sinifin anac sinif olarak kullanilmasini saglar
+@MappedSuperclass // Db de user tablosu olusmadan bu sinifin anac sinif olarak kullanilmasini sagliyor
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder //Alt siniflarin User sinifinin builder özelliklerini kullanabilmesine izin verir
-public abstract class User implements Serializable { //Ortak classlar icin bu class'i Base olarak kullanacagiz
+@SuperBuilder // Alt siniflarin USer sinifinin builder ozelliklerini kullanabilmesine izin verir
+// !!! @SuperBuilder ile @Builder arasindaki temel fark :https://www.baeldung.com/lombok-builder-inheritance
+// !!! @SuperBuilder in duzgun calismasi icin hem parent a hem de childa @SuperBuilder eklenmeli
+public abstract class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,8 +41,8 @@ public abstract class User implements Serializable { //Ortak classlar icin bu cl
 
     private String birthPlace;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Client'den DB'ye giderken yazma islemi olsun, Db'den Client'e giderken Okuma islemi olmasin.
-    private String password;                               // Hassas veri oldugu icin okuma islemlerinde kullanilmaz
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // hassas veri oldugu icin okuma islemlerinde kullanilmasin
+    private String password;
 
     @Column(unique = true)
     private String phoneNumber;
@@ -50,4 +52,12 @@ public abstract class User implements Serializable { //Ortak classlar icin bu cl
     private UserRole userRole;
 
     private Gender gender;
+
+
+
+
+
+
+
+
 }
