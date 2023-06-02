@@ -16,10 +16,13 @@ import java.util.Optional;
 public class UserRoleService {
 
     private final UserRoleRepository userRoleRepository;
+
+
     public UserRole getUserRole(RoleType roleType) {
 
        Optional<UserRole> userRole = userRoleRepository.findByERoleEquals(roleType);
-       return userRole.orElse(null);
+       //find li metodlar nullpointerexception verebilecegi icin optional ile bu exception engellenir
+       return userRole.orElse(null);//null degilse gonder dedik
     }
 
     // Runner tarafi icin gerekli method

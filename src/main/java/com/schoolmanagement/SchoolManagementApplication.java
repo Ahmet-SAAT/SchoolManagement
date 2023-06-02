@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @SpringBootApplication
 public class SchoolManagementApplication implements CommandLineRunner {
 
+	//CommandLineRunner implement ederek override ettigimiz metodla uygulama baslamadan once calisak islemler yapilir.
 	private final UserRoleService userRoleService;
 
 	private final AdminService adminService;
@@ -41,7 +42,7 @@ public class SchoolManagementApplication implements CommandLineRunner {
 			userRoleService.save(RoleType.GUESTUSER);
 		}
 
-		//!!! Admin olusturulacak  built_in
+		//!!! built_in olan Admin olusturulacak
 		if(adminService.countAllAdmin()==0) {
 			AdminRequest admin = new AdminRequest();
 			admin.setUsername("Admin");
