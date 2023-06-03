@@ -2,16 +2,27 @@ package com.schoolmanagement.service;
 
 import com.schoolmanagement.entity.concretes.Dean;
 import com.schoolmanagement.entity.enums.RoleType;
+import com.schoolmanagement.exception.ResourceNotFoundException;
 import com.schoolmanagement.payload.dto.DeanDto;
-import com.schoolmanagement.payload.request.AdminRequest;
 import com.schoolmanagement.payload.request.DeanRequest;
 import com.schoolmanagement.payload.response.DeanResponse;
 import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.repository.DeanRepository;
+import com.schoolmanagement.utils.CheckParameterUpdateMethod;
+import com.schoolmanagement.utils.Messages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service//bunu koymazsak bean olusmaz ve hata olur
 @RequiredArgsConstructor
@@ -70,4 +81,133 @@ public class DeanService {
 
     }
 
+    //update()************************************************
+    // Not :  UpdateById() **********************************************
+    public ResponseMessage<DeanResponse> update(DeanRequest newDean, Long deanId) {
+
+        /*Optional<Dean> dean = deanRepository.findById(deanId);//find varsa optional ile nullpointeexception engelle
+//null ise exception vermez null seklide dean objesi olusur.Dolu istiyorsak bir islem daha gerekir
+
+        // dean objesi bos olma kontrolu
+        if(!dean.isPresent()) { // isEmpty() de kullanilabilir
+
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));*/
+        Dean dean= checkDeanExists(deanId);
+        if(!CheckParameterUpdateMethod.checkParameter(dean,newDean)) {
+           //dean.get() demeliyim nicin get dedik dean optional oldugu icin get ile kullaniriz.
+            adminService.checkDuplicate(newDean.getUsername(),newDean.getSsn(), newDean.getPhoneNumber());
+            // tek parametre degistirildiginde senaryo postmande test edilmeli
+        }
+
+        // !!! guncellenen yeni bilgiler ile Dean objesini kaydediyoruz
+        Dean updatedDean = createUpdatedDean(newDean,deanId);//deanid menager id olacak
+        //password encode edildi
+        updatedDean.setPassword(passwordEncoder.encode(newDean.getPassword()));
+
+        deanRepository.save(updatedDean);
+
+        return ResponseMessage.<DeanResponse>builder()
+                .message("Dean Updated Successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(createDeanResponse(updatedDean))
+                .build();
+
+    }
+
+    //!!! yardimci metod
+    private Dean createUpdatedDean(DeanRequest deanRequest, Long managerId) {
+
+        return Dean.builder()
+                .id(managerId)//id degismemeli o zaman otomatik olmamali
+                .username(deanRequest.getUsername())
+                .ssn(deanRequest.getSsn())
+                .name(deanRequest.getName())
+                .surname(deanRequest.getSurname())
+                .birthPlace(deanRequest.getBirthPlace())
+                .birthDay(deanRequest.getBirthDay())
+                .phoneNumber(deanRequest.getPhoneNumber())
+                .gender(deanRequest.getGender())
+                .userRole(userRoleService.getUserRole(RoleType.MANAGER))
+                //service katindan roletype gidecegiz
+                .build();
+    }
+
+    // Not :  Delete() ****************************************************
+    public ResponseMessage<?> deleteDean(Long deanId) {
+
+    /*    Optional<Dean> dean = deanRepository.findById(deanId);
+
+        if(!dean.isPresent()) { // isEmpty() de kullanilabilir
+
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));
+        }
+*/
+        Dean dean= checkDeanExists(deanId);
+        deanRepository.deleteById(deanId);
+
+        return ResponseMessage.builder()
+                .message("Dean Deleted")
+                .httpStatus(HttpStatus.OK)
+                .build();
+                //object yok cunku zaten sildik.
+    }
+
+
+    // Not :  getById() ************************************************************************
+    public ResponseMessage<DeanResponse> getDeanById(Long deanId) {
+
+        // ODEV : asagida goz kanatan kod grubu method haline cevrilip cagirilacak
+
+       /* Optional<Dean> dean = deanRepository.findById(deanId);
+
+        if(!dean.isPresent()) { // isEmpty() de kullanilabilir
+
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));
+        }*/
+
+        Dean dean= checkDeanExists(deanId);
+        return ResponseMessage.<DeanResponse>builder()
+                .message("Dean Successfully found")
+                .httpStatus(HttpStatus.OK)
+                .object(createDeanResponse(dean))
+                .build();
+
+    }
+
+
+    public List<DeanResponse> getAllDean() {
+        return deanRepository.findAll()
+                .stream()
+                .map(this::createDeanResponse)
+                .collect(Collectors.toList());
+    }
+
+    // Not :  Search() *************************************************************************
+    public Page<DeanResponse> search(int page, int size, String sort, String type) {
+
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
+        if(Objects.equals(type, "desc")) {
+            pageable = PageRequest.of(page,size,Sort.by(sort).descending());
+        }
+
+        return deanRepository.findAll(pageable).map(this::createDeanResponse);
+
+    }
+
+
+
+
+
+    public Dean checkDeanExists(Long deanId) {
+
+        Optional<Dean> dean = deanRepository.findById(deanId);
+
+        if (!dean.isPresent()) { // isEmpty() de kullanilabilir
+
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));
+        }
+     return dean.get();
+    }
+
 }
+
