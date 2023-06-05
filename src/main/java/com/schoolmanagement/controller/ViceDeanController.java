@@ -1,6 +1,5 @@
 package com.schoolmanagement.controller;
 
-
 import com.schoolmanagement.payload.request.ViceDeanRequest;
 import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.payload.response.ViceDeanResponse;
@@ -18,59 +17,60 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ViceDeanController {
 
-    private ViceDeanService viceDeanService;
+    private final ViceDeanService viceDeanService;
 
-    //save()***************************************8
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")//vicedean ustu olanlar save yapanilsin
-    @PostMapping("/save")
-    public ResponseMessage<ViceDeanResponse> save(@RequestBody @Valid ViceDeanRequest viceDeanRequest){
-
-      return   viceDeanService.save(viceDeanRequest);
-    }
-
-//updateById()*************************8
+    // Not :  Save() *************************************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    @PutMapping("/update/{userId}")
-    public ResponseMessage<ViceDeanResponse> update(@RequestBody @Valid ViceDeanRequest viceDeanRequest,
-                                                    @PathVariable Long userId){
+    @PostMapping("/save") // http://localhost:8080/vicedean/save
+    public ResponseMessage<ViceDeanResponse> save(@RequestBody @Valid ViceDeanRequest viceDeanRequest) {
 
-        return viceDeanService.update(viceDeanRequest,userId);
+        return viceDeanService.save(viceDeanRequest);
 
     }
 
-    //deleteById()******************************
+    // Not :  UpdateById() ********************************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    @DeleteMapping ("/delete/{userId}")
-    public ResponseMessage<?> delete(@PathVariable Long userId) {
-        return viceDeanService.deleteViceDean( userId);
+    @PutMapping("/update/{userId}") // http://localhost:8080/vicedean/update/1
+    public ResponseMessage<ViceDeanResponse> update(@RequestBody @Valid ViceDeanRequest viceDeanRequest
+                                                    ,@PathVariable Long userId){
+        return viceDeanService.update(viceDeanRequest, userId);
+    }
+
+    // Not :  Delete() *************************************************************************
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    @DeleteMapping("/delete/{userId}") // http://localhost:8080/vicedean/delete/1
+    public ResponseMessage<?> delete(@PathVariable Long userId){
+
+        return viceDeanService.deleteViceDean(userId);
 
     }
 
-    //getById*****************************
+    // Not :  getById() ************************************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    @GetMapping("/getViceDeanById/{userId}")
+    @GetMapping("/getViceDeanById/{userId}")  // http://localhost:8080/vicedean/getViceDeanById/1
     public ResponseMessage<ViceDeanResponse> getViceDeanById(@PathVariable Long userId) {
-        return viceDeanService.getViceDeanById( userId);
+
+        return viceDeanService.getViceDeanById(userId);
 
     }
 
-    //getAll*****************************
+    // Not :  getAll() *************************************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    @GetMapping("/getAll")
-    public List<ViceDeanResponse> getAll() {
-        return viceDeanService.getAll();
-
+    @GetMapping("/getAll")  // http://localhost:8080/vicedean/getAll
+    public List<ViceDeanResponse> getAll(){
+        return viceDeanService.getAllViceDean();
     }
 
-    //getAllWithPage*****************************
+    // Not :  getAllWithPage() ********************************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    @GetMapping("/search")
+    @GetMapping("/search")  // http://localhost:8080/vicedean/search?page=0&size=3&sort=ssn&type=desc
     public Page<ViceDeanResponse> getAllWithPage(
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size,
             @RequestParam(value = "sort") String sort,
-            @RequestParam(value = "type") String type)
-    {
+            @RequestParam(value = "type") String type
+    ) {
+
         return viceDeanService.getAllWithPage(page,size,sort,type);
 
     }
@@ -78,4 +78,5 @@ public class ViceDeanController {
 
 
 
-    }
+
+}

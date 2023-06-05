@@ -37,16 +37,14 @@ public class AdminService {
 
         // !!! Girilen username - ssn- phoneNumber unique mi kontrolu
         checkDuplicate(request.getUsername(), request.getSsn(), request.getPhoneNumber());
-        // !!! Admin nesnesi builder ile olusturalim/dto pojoya cevtiliyor
+        // !!! Admin nesnesi builder ile olusturalim
         Admin admin = createAdminForSave(request);
         admin.setBuilt_in(false);
 
         if(Objects.equals(request.getUsername(), "Admin")) admin.setBuilt_in(true);
-        //verdigim kullanici ismini builtin yapmanin kisa yolu
 
         // !!! admin rolu veriliyor
         admin.setUserRole(userRoleService.getUserRole(RoleType.ADMIN));
-
         //!!! password encode ediliyor
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 
@@ -55,7 +53,7 @@ public class AdminService {
         return ResponseMessage.<AdminResponse>builder()
                 .message("Admin saved")
                 .httpStatus(HttpStatus.CREATED)
-                .object(createResponse(savedDate)) // pojo- dto donusumu yapiyoruz
+                .object(createResponse(savedDate)) // pojo- dto
                 .build();
 
     }
@@ -145,21 +143,16 @@ public class AdminService {
         return adminRepository.findAll(pageable);
     }
 
-
-
     // Not: delete() *******************************************************
     public String deleteAdmin(Long id) {
 
          Optional<Admin> admin = adminRepository.findById(id);
-         //optionalda deger bosta gelebilir.Dolu oldugunu isPresent ile dolulugunu kontrol ederiz.
-        //isPresent dolu ise true verir.
 
-         if(admin.isPresent() && admin.get().isBuilt_in()) {//admin.get optionalin dolu objesini getir demek
+         if(admin.isPresent() && admin.get().isBuilt_in()) {
              throw new ConflictException(Messages.NOT_PERMITTED_METHOD_MESSAGE);
-             //builtin ise silemezsin
          }
 
-         if(admin.isPresent()) {//adminin ici dolu ise sil
+         if(admin.isPresent()) {
              adminRepository.deleteById(id);
 
              return "Admin is deleted Successfully";

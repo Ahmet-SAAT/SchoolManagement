@@ -23,60 +23,55 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("auth")
 @RequiredArgsConstructor
-public class AuthController {//login icin yaptk
-
+public class AuthController {
 
     public final JwtUtils jwtUtils;
     public final AuthenticationManager authenticationManager;
 
-    @PostMapping("/login")//http://localhost:8080/auth/login
-    public ResponseEntity<AuthResponse> authenticateUser( @RequestBody @Valid LoginRequest loginRequest){
+    @PostMapping("/login") // http://localhost:8080/auth/login
+    public ResponseEntity<AuthResponse> authenticateUser(@RequestBody @Valid LoginRequest loginRequest){
 
-        //!!! Gelen requestin icinden username ve password bilgisi aliniyor.
-        String username=loginRequest.getUsername();
-        String password=loginRequest.getPassword();
+        //!!! Gelen requestin icinden kullanici adi ve parola bilgisi aliniyor
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
 
-        //authenticationManager uzerinden kullaniciyi valide ediyoruz
-        Authentication authentication =authenticationManager.
-                authenticate(new UsernamePasswordAuthenticationToken(username,password));
-
-        //kullaniciyi generate oncesi contexte attik
+        // !!! authenticationManager uzerinden kullaniciyi valide ediyoruz
+        Authentication authentication =authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
+        // !!! valide edilen kullanici Context e atiliyor
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        // !!! JWT token olusturuluyor
+        String token = "Bearer " + jwtUtils.generateJwtToken(authentication);
 
-        //JWT token olusturuluyor
-        String token="Bearer "+jwtUtils.generateJwtToken(authentication);
+         // !!! GrantedAuthority turundeki role yapisini String turune ceviriliyor
+          UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        //GrantedAutherity tipindeki role yapini string tipine cevirme
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();//anlik olarak login islemini gerceklerstiren userdetails gonderir
-        //userdetailsde role yok greantedautority var ama benim role setlemem lazim
+          Set<String> roles = userDetails
+                  .getAuthorities()
+                  .stream()
+                  .map(GrantedAuthority::getAuthority)
+                  .collect(Collectors.toSet());
 
-        Set<String> roles=userDetails
-                .getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)//grantedAuthority stringe cevrilerek roller anlayacagimiz sekilde
-                .collect(Collectors.toSet());
+          Optional<String> role = roles.stream().findFirst();
 
-        Optional<String> role =roles.stream().findFirst();
-
-        //AutResponse
-        AuthResponse.AuthResponseBuilder authResponse=AuthResponse.builder();
+          // !!! AuthResponse
+        AuthResponse.AuthResponseBuilder authResponse = AuthResponse.builder();
         authResponse.username(userDetails.getUsername());
         authResponse.token(token);
         authResponse.name(userDetails.getName());
 
-        //!!!Role mevcutsa ve TEACHER ise advisor durumu setleniyor
-        if (role.isPresent()){
-            authResponse.role(role.get());
-            if (role.get().equalsIgnoreCase(RoleType.TEACHER.name())){
-                authResponse.iAdvisor(userDetails.getIsAdvisor().toString());
+        // !!! Rol mevcutsa ve TEACHER ise advisor durumu setleniyor
+        if(role.isPresent()) {
+            authResponse.role(role.get()); // TODO kontrol edilecek
+            if(role.get().equalsIgnoreCase(RoleType.TEACHER.name())) {
+                authResponse.isAdvisor(userDetails.getIsAdvisor().toString());
             }
         }
 
-        //AuthResponse nesnesi ResponseEntity ile donduruyoruz
+        // !!! AuthResponse nesnesi ResponseEntity ile donduruyoruz
         return ResponseEntity.ok(authResponse.build());
-    }
 
+    }
 
 }

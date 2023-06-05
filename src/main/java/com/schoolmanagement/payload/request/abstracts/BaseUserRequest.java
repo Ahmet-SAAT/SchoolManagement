@@ -16,8 +16,8 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@SuperBuilder//Bu classdan extend ettigim tum claslar builder()yardimiyla bu classdaki ieldlara ulassin
-@MappedSuperclass//DBde bu class olusmayacak ama extend edec claslar DB de bu clasdaki datalara ulasacak
+@SuperBuilder
+@MappedSuperclass
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,7 +40,7 @@ public abstract class BaseUserRequest implements Serializable {
 
     @NotNull(message = "Please enter your birthday")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Past//girilen tarih gunumuzden eski olmali diyoruz
+    @Past
     private LocalDate birthDay;
 
     @NotNull

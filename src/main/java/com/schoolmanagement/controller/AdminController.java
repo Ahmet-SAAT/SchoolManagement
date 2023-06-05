@@ -43,7 +43,7 @@ public class AdminController {
             @RequestParam(value = "type", defaultValue = "desc") String type
     ) {
 
-        // pageable obje olusturulmasi servis katinda da yapilabilir
+        // pageable obje olusturulmasi servis katinda yapilabilir
         Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
 
         if(Objects.equals(type, "desc")) {

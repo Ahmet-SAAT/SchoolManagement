@@ -13,37 +13,34 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("dean")
 @RequiredArgsConstructor
+@RequestMapping("dean")
 public class DeanController {
 
     private final DeanService deanService;
 
-    //save() metodu ************************
-
-    @PostMapping("/save")//http://localhost:8080/dean/save
+    // Not: Save() *************************************************
+    @PostMapping("/save") // http://localhost:8080/dean/save
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseMessage<DeanResponse> save(@RequestBody @Valid DeanRequest deanRequest){
+    public ResponseMessage<DeanResponse> save(@RequestBody @Valid DeanRequest deanRequest) {
 
         return deanService.save(deanRequest);
+
     }
 
-
-    //NOT updateById()*****************
-    @PutMapping("/update/{userId}")//http://localhost:8080/dean/update/1
-    @PreAuthorize("hasAuthority('ADMIN')")//update islemini ustundekiler yapsin
-
+    // Not :  UpdateById() **********************************************
+    @PutMapping("/update/{userId}") // http://localhost:8080/dean/update/1
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseMessage<DeanResponse> update(@RequestBody @Valid DeanRequest deanRequest,
-                                                @PathVariable Long userId){//pathVariabe ile userid maplemis olduk
-
-        return deanService.update(deanRequest,userId);
+                                                @PathVariable Long userId) {
+         return deanService.update(deanRequest, userId);
     }
 
     // Not :  Delete() ****************************************************
     @DeleteMapping("/delete/{userId}") // http://localhost:8080/dean/delete/1
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseMessage<?> delete(@PathVariable Long userId){
-//? yerine ndeanresponse da koyabilirdim.Generic koyduk
+
         return deanService.deleteDean(userId);
     }
 
@@ -55,6 +52,7 @@ public class DeanController {
         return deanService.getDeanById(userId);
 
     }
+
     // Not :  getAll() *************************************************************************
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -65,8 +63,9 @@ public class DeanController {
 
     // Not :  Search() *************************************************************************
     @PreAuthorize("hasAuthority('ADMIN')")
+    // !!! method ismi degismeli--> getAllWithPage olabilir
     @GetMapping("/search") // hht://localhost:8080/dean/search
-    public Page<DeanResponse> search(//todo getAllWithPage
+    public Page<DeanResponse> search( // TODO getALLWithPAge
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size,
             @RequestParam(value = "sort") String sort,
@@ -75,6 +74,11 @@ public class DeanController {
 
         return deanService.search(page,size,sort,type);
     }
+
+
+
+
+
 
 
 

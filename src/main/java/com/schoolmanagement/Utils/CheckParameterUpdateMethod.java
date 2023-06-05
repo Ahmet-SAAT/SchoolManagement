@@ -7,8 +7,6 @@ import com.schoolmanagement.payload.request.abstracts.BaseUserRequest;
 public class CheckParameterUpdateMethod {
 
     public static  boolean checkParameter(User user, BaseUserRequest baseUserRequest) {
-        //metodu diger classlarda da kullanabilmek icin interface degerlerini yazdim.
-        //mesela user yerine dean baseuserrequest yerine deanrequest yazacagim kullanacagim yerde
 
         return user.getSsn().equalsIgnoreCase(baseUserRequest.getSsn())
                 || user.getPhoneNumber().equalsIgnoreCase(baseUserRequest.getPhoneNumber())

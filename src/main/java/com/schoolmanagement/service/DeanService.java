@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service//bunu koymazsak bean olusmaz ve hata olur
+@Service
 @RequiredArgsConstructor
 public class DeanService {
 
@@ -34,39 +34,40 @@ public class DeanService {
     private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
 
-//save******************************
+
+    // Not: Save() *************************************************
     public ResponseMessage<DeanResponse> save(DeanRequest deanRequest) {
 
-        //dublicate kontrolu
+        //!!! Dublicate kontrolu
         adminService.checkDuplicate(deanRequest.getUsername(),
                 deanRequest.getSsn(),
                 deanRequest.getPhoneNumber());
-        //dto-pojo donusumu
-       Dean dean=createDtoForDean(deanRequest);
-       //role ve password bilgileri uygun sekilde setleniyor
-       dean.setUserRole(userRoleService.getUserRole(RoleType.MANAGER));
-       dean.setPassword(passwordEncoder.encode(dean.getPassword()));
-       //DB ye kayit
-       Dean savedDean=deanRepository.save(dean);
 
+        // !!! DTO -POJO donusumu
+        Dean dean = createDtoForDean(deanRequest);
+        // !!! role ve password bilgileri uygun sekilde setleniyor
+        dean.setUserRole(userRoleService.getUserRole(RoleType.MANAGER));
+        dean.setPassword(passwordEncoder.encode(dean.getPassword()));
 
-     return ResponseMessage.<DeanResponse>builder()
-             .message("Dean Saved")
-             .httpStatus(HttpStatus.CREATED)
-             .object(createDeanResponse(savedDean)) //yardimci metod ile dto dondurecegiz.Sifre falan almasin
-             .build();
-    }
+        // !!! Db ye kayit
+        Dean savedDean = deanRepository.save(dean);
 
-    private Dean createDtoForDean(DeanRequest deanRequest){
-
-   return deanDto.dtoBean(deanRequest);
+        return ResponseMessage.<DeanResponse>builder()
+                .message("Dean Saved")
+                .httpStatus(HttpStatus.CREATED)
+                .object(createDeanResponse(savedDean))
+                .build();
+        // yardimci metod
 
     }
 
+    private Dean createDtoForDean(DeanRequest deanRequest){ // createDtoToPOJO
+
+        return deanDto.dtoDean(deanRequest);
+    }
 
     private DeanResponse createDeanResponse(Dean dean){
-        return DeanResponse.
-                builder()
+        return DeanResponse.builder()
                 .userId(dean.getId())
                 .username(dean.getUsername())
                 .name(dean.getName())
@@ -74,36 +75,30 @@ public class DeanService {
                 .birthDay(dean.getBirthDay())
                 .birthPlace(dean.getBirthPlace())
                 .phoneNumber(dean.getPhoneNumber())
+                .gender(dean.getGender())
                 .ssn(dean.getSsn())
-                .gender(dean.getGender()).
-                build();
-                //password ve role bilgisi dondurulmedi
-
+                .build();
     }
 
-    //update()************************************************
     // Not :  UpdateById() **********************************************
     public ResponseMessage<DeanResponse> update(DeanRequest newDean, Long deanId) {
 
-        /*Optional<Dean> dean = deanRepository.findById(deanId);//find varsa optional ile nullpointeexception engelle
-//null ise exception vermez null seklide dean objesi olusur.Dolu istiyorsak bir islem daha gerekir
+        //  checkDeanExists(deanId);  // tekrarlanan kisim icin
+
+        Optional<Dean> dean = deanRepository.findById(deanId);
 
         // dean objesi bos olma kontrolu
         if(!dean.isPresent()) { // isEmpty() de kullanilabilir
 
-            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));*/
-        Dean dean= checkDeanExists(deanId);
-        if(!CheckParameterUpdateMethod.checkParameter(dean,newDean)) {
-           //dean.get() demeliyim nicin get dedik dean optional oldugu icin get ile kullaniriz.
-            adminService.checkDuplicate(newDean.getUsername(),newDean.getSsn(), newDean.getPhoneNumber());
-            // tek parametre degistirildiginde senaryo postmande test edilmeli
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));
+        } else if(!CheckParameterUpdateMethod.checkParameter(dean.get(),newDean)) {
+
+            adminService.checkDuplicate(newDean.getUsername(),newDean.getSsn(), newDean.getPhoneNumber()); // tek parametre degistirildiginde senaryo postmande test edilmeli
         }
 
         // !!! guncellenen yeni bilgiler ile Dean objesini kaydediyoruz
-        Dean updatedDean = createUpdatedDean(newDean,deanId);//deanid menager id olacak
-        //password encode edildi
+        Dean updatedDean = createUpdatedDean(newDean,deanId);
         updatedDean.setPassword(passwordEncoder.encode(newDean.getPassword()));
-
         deanRepository.save(updatedDean);
 
         return ResponseMessage.<DeanResponse>builder()
@@ -118,7 +113,7 @@ public class DeanService {
     private Dean createUpdatedDean(DeanRequest deanRequest, Long managerId) {
 
         return Dean.builder()
-                .id(managerId)//id degismemeli o zaman otomatik olmamali
+                .id(managerId)
                 .username(deanRequest.getUsername())
                 .ssn(deanRequest.getSsn())
                 .name(deanRequest.getName())
@@ -128,58 +123,57 @@ public class DeanService {
                 .phoneNumber(deanRequest.getPhoneNumber())
                 .gender(deanRequest.getGender())
                 .userRole(userRoleService.getUserRole(RoleType.MANAGER))
-                //service katindan roletype gidecegiz
                 .build();
     }
 
     // Not :  Delete() ****************************************************
     public ResponseMessage<?> deleteDean(Long deanId) {
 
-    /*    Optional<Dean> dean = deanRepository.findById(deanId);
+      checkDeanExists(deanId);  // tekrarlanan kisim icin
 
-        if(!dean.isPresent()) { // isEmpty() de kullanilabilir
-
-            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));
-        }
-*/
-        Dean dean= checkDeanExists(deanId);
-        deanRepository.deleteById(deanId);
-
-        return ResponseMessage.builder()
-                .message("Dean Deleted")
-                .httpStatus(HttpStatus.OK)
-                .build();
-                //object yok cunku zaten sildik.
-    }
-
-
-    // Not :  getById() ************************************************************************
-    public ResponseMessage<DeanResponse> getDeanById(Long deanId) {
-
-        // ODEV : asagida goz kanatan kod grubu method haline cevrilip cagirilacak
-
-       /* Optional<Dean> dean = deanRepository.findById(deanId);
+/*        Optional<Dean> dean = deanRepository.findById(deanId);
 
         if(!dean.isPresent()) { // isEmpty() de kullanilabilir
 
             throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));
         }*/
 
-        Dean dean= checkDeanExists(deanId);
+        deanRepository.deleteById(deanId);
+
+        return ResponseMessage.builder()
+                .message("Dean Deleted")
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+    // Not :  getById() ************************************************************************
+    public ResponseMessage<DeanResponse> getDeanById(Long deanId) {
+
+
+       checkDeanExists(deanId);  // tekrarlanan kisim icin
+
+/*        Optional<Dean> dean = deanRepository.findById(deanId);
+
+        if(!dean.isPresent()) { // isEmpty() de kullanilabilir
+
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));
+        }*/
+
         return ResponseMessage.<DeanResponse>builder()
                 .message("Dean Successfully found")
                 .httpStatus(HttpStatus.OK)
-                .object(createDeanResponse(dean))
+                .object(createDeanResponse(checkDeanExists(deanId).get()))
                 .build();
 
     }
 
-
+    // Not :  getAll() *************************************************************************
     public List<DeanResponse> getAllDean() {
-        return deanRepository.findAll()
-                .stream()
-                .map(this::createDeanResponse)
-                .collect(Collectors.toList());
+
+      return deanRepository.findAll()
+              .stream()
+              .map(this::createDeanResponse)
+              .collect(Collectors.toList());
     }
 
     // Not :  Search() *************************************************************************
@@ -194,20 +188,12 @@ public class DeanService {
 
     }
 
-
-
-
-
-    public Dean checkDeanExists(Long deanId) {
-
+    // Not: tekrarlanan kod blogu icin yazilan method
+    private Optional<Dean> checkDeanExists(Long deanId) {
         Optional<Dean> dean = deanRepository.findById(deanId);
-
-        if (!dean.isPresent()) { // isEmpty() de kullanilabilir
-
+        if (!dean.isPresent()) {
             throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, deanId));
         }
-     return dean.get();
+        return dean;
     }
-
 }
-

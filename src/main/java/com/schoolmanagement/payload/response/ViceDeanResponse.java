@@ -11,4 +11,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class ViceDeanResponse extends BaseUserResponse {
+
+
 }

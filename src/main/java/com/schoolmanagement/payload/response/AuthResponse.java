@@ -1,6 +1,5 @@
 package com.schoolmanagement.payload.response;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)//null olmayan veriler gonderilsin null olan gonderilmesin
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthResponse {
 
     private String username;
@@ -19,6 +18,5 @@ public class AuthResponse {
     private String role;
     private String token;
     private String name;
-    private String iAdvisor;
-
+    private String isAdvisor;
 }
