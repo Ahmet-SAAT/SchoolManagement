@@ -33,5 +33,3 @@ public class EducationTermRequest implements Serializable {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate lastRegistrationDate;
 }
-
-//annotationlari jvm anlamaz.Derleme aninda onlar koda donusur.

@@ -1,6 +1,5 @@
 package com.schoolmanagement.repository;
 
-
 import com.schoolmanagement.entity.concretes.EducationTerm;
 import com.schoolmanagement.entity.enums.Term;
 import org.springframework.data.jpa.repository.JpaRepository;

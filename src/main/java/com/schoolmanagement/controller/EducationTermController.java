@@ -1,6 +1,5 @@
 package com.schoolmanagement.controller;
 
-
 import com.schoolmanagement.payload.request.EducationTermRequest;
 import com.schoolmanagement.payload.response.EducationTermResponse;
 import com.schoolmanagement.payload.response.ResponseMessage;

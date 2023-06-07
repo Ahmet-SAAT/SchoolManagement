@@ -60,12 +60,12 @@ public class EducationTermService {
 
     private EducationTerm createEducationTerm(EducationTermRequest request) {
 
-        return EducationTerm.builder()
-                .term(request.getTerm())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .lastRegistrationDate(request.getLastRegistrationDate())
-                .build();
+       return EducationTerm.builder()
+               .term(request.getTerm())
+               .startDate(request.getStartDate())
+               .endDate(request.getEndDate())
+               .lastRegistrationDate(request.getLastRegistrationDate())
+               .build();
     }
 
     private EducationTermResponse createEducationTermResponse(EducationTerm response) {
@@ -156,13 +156,13 @@ public class EducationTermService {
         ResponseMessage.ResponseMessageBuilder<EducationTermResponse> responseMessageBuilder =
                 ResponseMessage.builder();
 
-        EducationTerm updated = createUpdatedEducationTerm(id,request);
-        educationTermRepository.save(updated);
+          EducationTerm updated = createUpdatedEducationTerm(id,request);
+          educationTermRepository.save(updated);
 
-        return responseMessageBuilder
-                .object(createEducationTermResponse(updated))
-                .message("Education Term Updated Successfully")
-                .build();
+          return responseMessageBuilder
+                  .object(createEducationTermResponse(updated))
+                  .message("Education Term Updated Successfully")
+                  .build();
 
     }
 

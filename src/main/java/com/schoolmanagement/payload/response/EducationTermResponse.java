@@ -19,6 +19,6 @@ public class EducationTermResponse {
     private Term term;
     private LocalDate startDate;
     private  LocalDate endDate;
-    private LocalDate lastRegistrationDate;
+    private LocalDate lastRegistrationDate; 
 
 }

@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -28,39 +27,36 @@ public class LessonService {
 
     private final LessonRepository lessonRepository;
 
-
-    //SAVE()********************************************************
     public ResponseMessage<LessonResponse> save(LessonRequest lessonRequest) {
-        if (existsLessonByLessonName(lessonRequest.getLessonName())) {
-            throw new ConflictException(String.format(Messages.ALREADY_REGISTER_LESSON_MESSAGE, lessonRequest.getLessonName()));
+
+        //!!! conflict kontrolu
+        if(existsLessonByLessonName(lessonRequest.getLessonName())) {
+           throw new ConflictException(String.format(Messages.ALREADY_REGISTER_LESSON_MESSAGE,
+                   lessonRequest.getLessonName()));
         }
-           Lesson lesson=createLessonObject(lessonRequest);
-           lessonRepository.save(lesson);
 
-           return ResponseMessage.<LessonResponse>builder()
-                   .message("Lesson Created Successfully")
-                   .httpStatus(HttpStatus.CREATED)
-                   .object(createLessonResponse(lesson))
-                   .build();
+        Lesson lesson = createLessonObject((lessonRequest));
 
-
+        return ResponseMessage.<LessonResponse>builder()
+                .object(createLessonResponse(lessonRepository.save(lesson)))
+                .message("Lesson Created Successfully")
+                .httpStatus(HttpStatus.CREATED)
+                .build();
     }
 
-    private boolean existsLessonByLessonName(String lessonname) {
-        return lessonRepository.existsLessonByLessonNameEqualsIgnoreCase(lessonname);
+    private boolean existsLessonByLessonName(String lessonName) {
+        return lessonRepository.existsLessonByLessonNameEqualsIgnoreCase(lessonName);
     }
-
 
     private Lesson createLessonObject(LessonRequest request) {
         return Lesson.builder()
                 .lessonName(request.getLessonName())
                 .creditScore(request.getCreditScore())
-                .isCompulsory(request.getIsCompulsory())
+                .isCompulsory(request.getIsCompulsory())  // isCompulsory negatif kontrolui eklenecek
                 .build();
-
     }
 
-    private LessonResponse createLessonResponse(Lesson lesson){
+    private LessonResponse createLessonResponse(Lesson lesson) {
         return LessonResponse.builder()
                 .lessonId(lesson.getLessonId())
                 .lessonName(lesson.getLessonName())
@@ -69,18 +65,14 @@ public class LessonService {
                 .build();
     }
 
-
-
-
-    //DELETE()*************************************************
+    // Not :  Delete() *************************************************************************
     public ResponseMessage deleteLesson(Long id) {
 
-        Lesson lesson=lessonRepository.findById(id).orElseThrow(
-                //orElsethrow ile obje varsa ver yoksa exception firlat.optionale gerek kalmadi
-                ()->{
-                    return new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE,id));
-                });
-       lessonRepository.deleteById(id);
+        Lesson lesson = lessonRepository.findById(id).orElseThrow(()->{
+            return new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE, id));
+        });
+
+        lessonRepository.deleteById(id);
 
         return ResponseMessage.builder()
                 .message("Lesson is deleted successfully")
@@ -88,48 +80,43 @@ public class LessonService {
                 .build();
     }
 
-
-
-    //GETLESSONBYLESSONNAME
+    // Not :  getLessonByLessonName() **********************************************************
     public ResponseMessage<LessonResponse> getLessonByLessonName(String lessonName) {
 
-        Lesson lesson=lessonRepository.getLessonByLessonName(lessonName).orElseThrow(()->{
-           return new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE,lessonName));
+        Lesson lesson = lessonRepository.getLessonByLessonName(lessonName).orElseThrow(()->{
+            return new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE, lessonName));
         });
+
         return ResponseMessage.<LessonResponse>builder()
                 .message("Lesson Successfully found")
                 .object(createLessonResponse(lesson))
                 .build();
+
     }
 
-
-
-    //GETALLLESSON()***********************************
+    // Not :  getAllLesson() **********************************************************************
     public List<LessonResponse> getAllLesson() {
 
-        return lessonRepository.findAll().
-                stream().map(this::createLessonResponse).
-                collect(Collectors.toList());
+        return lessonRepository.findAll()
+                .stream()
+                .map(this::createLessonResponse)
+                .collect(Collectors.toList());
     }
-
-
 
     // Not :  getAllWithPage() **********************************************************
     public Page<LessonResponse> search(int page, int size, String sort, String type) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-        if (Objects.equals(type, "desc")) {
-            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        if(Objects.equals(type,"desc")) {
+            pageable = PageRequest.of(page,size,Sort.by(sort).descending());
         }
+
         return lessonRepository.findAll(pageable).map(this::createLessonResponse);
     }
-
-
 
     // Not :  getAllLessonByLessonIds() *****************************************************
     public Set<Lesson> getLessonByLessonIdList(Set<Long> lessons) {
 
         return lessonRepository.getLessonByLessonIdList(lessons);
     }
-
 }

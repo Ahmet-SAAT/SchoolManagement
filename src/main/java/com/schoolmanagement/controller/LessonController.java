@@ -1,6 +1,5 @@
 package com.schoolmanagement.controller;
 
-
 import com.schoolmanagement.entity.concretes.Lesson;
 import com.schoolmanagement.payload.request.LessonRequest;
 import com.schoolmanagement.payload.response.LessonResponse;
@@ -20,10 +19,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LessonController {
 
-
     private final LessonService lessonService;
-
-
 
     // Not :  Save() *************************************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
@@ -32,16 +28,14 @@ public class LessonController {
         return lessonService.save(lesson);
     }
 
-
-    //DELETE()********************************************************************
+    // Not :  Delete() *************************************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @DeleteMapping("/delete/{id}") // http://localhost:8080/lessons/delete/1
     public ResponseMessage deleteLesson(@PathVariable Long id) {
         return lessonService.deleteLesson(id);
     }
 
-
-    // Not :  getLessonByLessonName() **********************************************************
+    // Not : getLessonByLessonName() **********************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @GetMapping("/getLessonByName") // http://localhost:8080/lessons/getLessonName?lessonName=Math
     public ResponseMessage<LessonResponse> getLessonByLessonName(@RequestParam String lessonName) {
@@ -49,16 +43,15 @@ public class LessonController {
     }
 
     // Not :  getAllLesson() **********************************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')") // TODO student veya teacher kelenebilir mi ??
     @GetMapping("/getAll")  // http://localhost:8080/lessons/getAll
     public List<LessonResponse> getAllLesson() {
         return lessonService.getAllLesson();
     }
 
-
     // Not :  getAllWithPage() **********************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
-    @GetMapping("/search")
+    @GetMapping("/search")   // http://localhost:8080/lessons/search
     public Page<LessonResponse> search(
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size,
@@ -68,14 +61,15 @@ public class LessonController {
         return lessonService.search(page,size,sort,type);
     }
 
-
-
     // Not :  getAllLessonByLessonIds() *****************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @GetMapping("/getAllLessonByLessonId")  // http://localhost:8080/lessons/getAllLessonByLessonId
     public Set<Lesson> getAllLessonByLessonId(@RequestParam(name = "lessonId") Set<Long> idList){
         return lessonService.getLessonByLessonIdList(idList);
     }
+
+    // TODO : Update methodu yazilacak
+
 
 
 }
