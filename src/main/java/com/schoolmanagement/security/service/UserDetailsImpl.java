@@ -26,11 +26,12 @@ public class UserDetailsImpl implements UserDetails {
 
     private Boolean isAdvisor;
 
-    @JsonIgnore
+    @JsonIgnore //passwordu ön tarafa plaintext olarak gönderme
     private String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private Collection<? extends  GrantedAuthority> authorities;
 
+    //GrantedAuthority'i constructor olarak almiyor, bizdeki role'ü GrantedAuthority'e dönüstürüyoruz
     public UserDetailsImpl(Long id, String username, String name, Boolean isAdvisor, String password, String role) {
         this.id = id;
         this.username = username;
@@ -77,13 +78,17 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    public boolean equals(Object o) {
-        if(this == o) // kensisi ile karsilastiriliyor
-            return true ;
-        if( o== null || getClass() != o.getClass())
-            return false;
-        UserDetailsImpl user = (UserDetailsImpl) o;
-        return Objects.equals(id, user.id); // id ile kiyaslama
-    }
+    //iki tane userdetails türünde nesne gelecekse ve birbiriyle kiyaslanacaksa ve bu kiyaslanma kriterini kendimizi göre özellestireceksek;
+    public boolean equals(Object o){
 
+        if (this==o)//kendisi ile kiyasliyorsak
+            return true;
+
+        if (o ==null || getClass() != o.getClass())
+            return false;
+
+            UserDetailsImpl user = (UserDetailsImpl) o;
+            return Objects.equals(id,user.id); // id ile kiyaslama
+
+    }
 }

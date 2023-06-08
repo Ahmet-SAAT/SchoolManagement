@@ -4,6 +4,7 @@ import com.schoolmanagement.entity.concretes.Lesson;
 import com.schoolmanagement.exception.ConflictException;
 import com.schoolmanagement.exception.ResourceNotFoundException;
 import com.schoolmanagement.payload.request.LessonRequest;
+import com.schoolmanagement.payload.response.LessonProgramResponse;
 import com.schoolmanagement.payload.response.LessonResponse;
 import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.repository.LessonRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -23,24 +25,22 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class LessonService {
+public class LessonService implements Serializable {
 
     private final LessonRepository lessonRepository;
 
+    //Not: save() **************************************************************************************************************************************
     public ResponseMessage<LessonResponse> save(LessonRequest lessonRequest) {
 
-        //!!! conflict kontrolu
-        if(existsLessonByLessonName(lessonRequest.getLessonName())) {
-           throw new ConflictException(String.format(Messages.ALREADY_REGISTER_LESSON_MESSAGE,
-                   lessonRequest.getLessonName()));
+        //!!! conflict kontrolü
+        if (existsLessonByLessonName(lessonRequest.getLessonName())) {
+            throw new ConflictException(String.format(Messages.ALREADY_REGISTER_LESSON_MESSAGE, lessonRequest.getLessonName()));
         }
-
-        Lesson lesson = createLessonObject((lessonRequest));
-
+        Lesson lesson = createLessonObject(lessonRequest);
         return ResponseMessage.<LessonResponse>builder()
                 .object(createLessonResponse(lessonRepository.save(lesson)))
-                .message("Lesson Created Successfully")
                 .httpStatus(HttpStatus.CREATED)
+                .message("Lesson Created Successfully")
                 .build();
     }
 
@@ -52,7 +52,7 @@ public class LessonService {
         return Lesson.builder()
                 .lessonName(request.getLessonName())
                 .creditScore(request.getCreditScore())
-                .isCompulsory(request.getIsCompulsory())  // isCompulsory negatif kontrolui eklenecek
+                .isCompulsory(request.getIsCompulsory()) //isCompulsory negatif kontrolü eklenecek
                 .build();
     }
 
@@ -65,36 +65,36 @@ public class LessonService {
                 .build();
     }
 
-    // Not :  Delete() *************************************************************************
+    // Not :  delete() ************************************************************************************************************************************
     public ResponseMessage deleteLesson(Long id) {
 
-        Lesson lesson = lessonRepository.findById(id).orElseThrow(()->{
+        lessonRepository.findById(id).orElseThrow(() -> {
             return new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE, id));
         });
 
         lessonRepository.deleteById(id);
 
         return ResponseMessage.builder()
-                .message("Lesson is deleted successfully")
+                .message("Lesson is deleted successfuly")
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
 
-    // Not :  getLessonByLessonName() **********************************************************
+    //Not: getLessonByName() ******************************************************************************************************************************
     public ResponseMessage<LessonResponse> getLessonByLessonName(String lessonName) {
 
-        Lesson lesson = lessonRepository.getLessonByLessonName(lessonName).orElseThrow(()->{
+        Lesson lesson = lessonRepository.getLessonByLessonName(lessonName).orElseThrow(() -> {
             return new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE, lessonName));
         });
 
         return ResponseMessage.<LessonResponse>builder()
-                .message("Lesson Successfully found")
+                .message("Lesson Successfuly Found")
+                .httpStatus(HttpStatus.OK)
                 .object(createLessonResponse(lesson))
                 .build();
-
     }
 
-    // Not :  getAllLesson() **********************************************************************
+    //Not: getAllLesson() **********************************************************************************************************************************
     public List<LessonResponse> getAllLesson() {
 
         return lessonRepository.findAll()
@@ -103,20 +103,44 @@ public class LessonService {
                 .collect(Collectors.toList());
     }
 
-    // Not :  getAllWithPage() **********************************************************
+    //Not: getAllWithPage() ********************************************************************************************************************************
     public Page<LessonResponse> search(int page, int size, String sort, String type) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-        if(Objects.equals(type,"desc")) {
-            pageable = PageRequest.of(page,size,Sort.by(sort).descending());
+        if (Objects.equals(type, "desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
         }
 
         return lessonRepository.findAll(pageable).map(this::createLessonResponse);
     }
 
-    // Not :  getAllLessonByLessonIds() *****************************************************
+    //Not: getAllLessonByLessonIds() *************************************************************************************************************************
     public Set<Lesson> getLessonByLessonIdList(Set<Long> lessons) {
 
         return lessonRepository.getLessonByLessonIdList(lessons);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

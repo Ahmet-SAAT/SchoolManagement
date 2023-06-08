@@ -13,15 +13,14 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UserRole {
+@Builder(toBuilder = true)
+public class UserRole { //ara bir tablo oldugu icin serilestirmeye gerek yok. Ama kullanilmasinda sakinca yoktur
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(length = 25)
     private RoleType roleType;
-
 }

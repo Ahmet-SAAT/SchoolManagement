@@ -26,3 +26,22 @@ public class LessonRequest {
     @NotNull(message = "Please enter isCompulsory")
     private Boolean isCompulsory;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

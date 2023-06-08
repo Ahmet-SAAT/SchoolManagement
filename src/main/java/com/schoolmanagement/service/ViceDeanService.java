@@ -9,6 +9,7 @@ import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.payload.response.ViceDeanResponse;
 import com.schoolmanagement.repository.ViceDeanRepository;
 import com.schoolmanagement.utils.CheckParameterUpdateMethod;
+import com.schoolmanagement.utils.CheckUniqueFields;
 import com.schoolmanagement.utils.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,62 +30,42 @@ import java.util.stream.Collectors;
 public class ViceDeanService {
 
     private final ViceDeanRepository viceDeanRepository;
-    private final AdminService adminService;
     private final ViceDeanDto viceDeanDto;
     private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
+    private final CheckUniqueFields checkUniqueFields;
 
-    // Not :  Save() *************************************************************************
+    //Not: save() **************************************************************************************************************************************
     public ResponseMessage<ViceDeanResponse> save(ViceDeanRequest viceDeanRequest) {
 
-        adminService.checkDuplicate(viceDeanRequest.getUsername(), viceDeanRequest.getSsn(), viceDeanRequest.getPhoneNumber());
+        checkUniqueFields.checkDuplicate(viceDeanRequest.getUsername(), viceDeanRequest.getSsn(), viceDeanRequest.getPhoneNumber());
+
         ViceDean viceDean = createPojoFromDTO(viceDeanRequest);
-        // Roll ve password encode islemleri
+        // ViceDean viceDean = viceDeanDto.dtoViceBean(viceDeanRequest); yardimci metodu yazmadan bu sekilde yukaridaki kod yazilabilirdi
+
+        //Role ve Password encode islemleri
         viceDean.setUserRole(userRoleService.getUserRole(RoleType.ASSISTANTMANAGER));
         viceDean.setPassword(passwordEncoder.encode(viceDeanRequest.getPassword()));
 
-
-
         viceDeanRepository.save(viceDean);
-        // response nesnesi olusturulacak
+
+        //response nesnesi olusturulacak
         return ResponseMessage.<ViceDeanResponse>builder()
                 .message("Vice Dean Saved")
                 .httpStatus(HttpStatus.CREATED)
                 .object(createViceDeanResponse(viceDean))
                 .build();
-
     }
 
-    private ViceDean createPojoFromDTO(ViceDeanRequest viceDeanRequest){
-
-            return viceDeanDto.dtoViceBean(viceDeanRequest);
-
-    }
-
-    private ViceDeanResponse createViceDeanResponse(ViceDean viceDean) {
-
-        return ViceDeanResponse.builder()
-                .userId(viceDean.getId())
-                .username(viceDean.getUsername())
-                .name(viceDean.getName())
-                .surname(viceDean.getSurname())
-                .birthPlace(viceDean.getBirthPlace())
-                .birthDay(viceDean.getBirthDay())
-                .phoneNumber(viceDean.getPhoneNumber())
-                .ssn(viceDean.getSsn())
-                .gender(viceDean.getGender())
-                .build();
-    }
-
-    // Not :  UpdateById() ********************************************************************
+    //Not: updateById() *********************************************************************************************************************************
     public ResponseMessage<ViceDeanResponse> update(ViceDeanRequest newViceDean, Long managerId) {
 
         Optional<ViceDean> viceDean = viceDeanRepository.findById(managerId);
 
-        if(!viceDean.isPresent()) {
-            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE,managerId));
-        }else if(!CheckParameterUpdateMethod.checkParameter(viceDean.get(), newViceDean )) {
-            adminService.checkDuplicate(newViceDean.getUsername(), newViceDean.getSsn(), newViceDean.getPhoneNumber());
+        if (!viceDean.isPresent()) {
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, managerId));
+        } else if (!CheckParameterUpdateMethod.checkParameter(viceDean.get(), newViceDean)) {
+            checkUniqueFields.checkDuplicate(newViceDean.getUsername(), newViceDean.getSsn(), newViceDean.getPhoneNumber());
         }
 
         ViceDean updatedViceDean = createUpdatedViceDean(newViceDean, managerId);
@@ -116,13 +97,16 @@ public class ViceDeanService {
                 .build();
     }
 
-    // Not :  Delete() *************************************************************************
+
+
+
+    //Not: delete() *************************************************************************************************************************************
     public ResponseMessage<?> deleteViceDean(Long managerId) {
 
         Optional<ViceDean> viceDean = viceDeanRepository.findById(managerId);
 
-        if(!viceDean.isPresent()) {
-            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE,managerId));
+        if (!viceDean.isPresent()) {
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, managerId));
         }
 
         viceDeanRepository.deleteById(managerId);
@@ -133,13 +117,13 @@ public class ViceDeanService {
                 .build();
     }
 
-    // Not :  getById() ************************************************************************
+    //Not: getById() *************************************************************************************************************************************
     public ResponseMessage<ViceDeanResponse> getViceDeanById(Long managerId) {
 
         Optional<ViceDean> viceDean = viceDeanRepository.findById(managerId);
 
-        if(!viceDean.isPresent()) {
-            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE,managerId));
+        if (!viceDean.isPresent()) {
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, managerId));
         }
 
         return ResponseMessage.<ViceDeanResponse>builder()
@@ -147,10 +131,9 @@ public class ViceDeanService {
                 .httpStatus(HttpStatus.OK)
                 .object(createViceDeanResponse(viceDean.get()))
                 .build();
-
     }
 
-    // Not :  getAll() *************************************************************************
+    //Not: getAll() **************************************************************************************************************************************
     public List<ViceDeanResponse> getAllViceDean() {
 
         return viceDeanRepository.findAll()
@@ -159,16 +142,42 @@ public class ViceDeanService {
                 .collect(Collectors.toList());
     }
 
-    // Not :  getAllWithPage() ********************************************************************
+    //Not: getAllWithPage() ******************************************************************************************************************************
     public Page<ViceDeanResponse> getAllWithPage(int page, int size, String sort, String type) {
 
-        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
-        if(Objects.equals(type,"desc")) {
-            pageable = PageRequest.of(page,size,Sort.by(sort).descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+
+        //Eger default degerler geliyorsa yani hicbir deger girilmediyse asagidaki kod calisir
+        if (Objects.equals(type, "desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
         }
 
         return viceDeanRepository.findAll(pageable).map(this::createViceDeanResponse);
     }
 
 
+    //DTO --> POJO
+    private ViceDean createPojoFromDTO(ViceDeanRequest viceDeanRequest) {
+
+        return viceDeanDto.dtoViceBean(viceDeanRequest);
+    }
+
+    //POJO --> DTO
+    private ViceDeanResponse createViceDeanResponse(ViceDean viceDean) {
+        return ViceDeanResponse.builder()
+                .userId(viceDean.getId())
+                .username(viceDean.getUsername())
+                .name(viceDean.getName())
+                .surname(viceDean.getSurname())
+                .ssn(viceDean.getSsn())
+                .birthDay(viceDean.getBirthDay())
+                .birthPlace(viceDean.getBirthPlace())
+                .gender(viceDean.getGender())
+                .phoneNumber(viceDean.getPhoneNumber())
+                .build();
+    }
 }
+
+
+
+

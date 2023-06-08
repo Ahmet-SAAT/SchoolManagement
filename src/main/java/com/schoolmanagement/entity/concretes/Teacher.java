@@ -14,10 +14,12 @@ import java.util.Set;
 @NoArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true)
+@ToString
 public class Teacher extends User {
 
-    @OneToOne(mappedBy = "teacher", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToOne(mappedBy = "teacher", cascade = CascadeType.PERSIST,orphanRemoval = true)
+    //cascade = CascadeType.PERSIST --> biri kaydedilince, digeri de otomatik DB ye kaydediliyor
+    //orphanRemoval = true --> biri silinince digerini de sil
     private AdvisorTeacher advisorTeacher;
 
     @Column(name = "isAdvisor")
@@ -26,13 +28,13 @@ public class Teacher extends User {
     @Column(unique = true)
     private String email;
 
-
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.REMOVE)
+    //!!! StudentInfo, LessonProgram
+    @OneToMany(mappedBy = "teacher",cascade = CascadeType.REMOVE)
     private List<StudentInfo> studentInfos;
 
     @ManyToMany
     @JoinTable(
-            name = "teacher_lessonprogram",
+            name = "teacher_lesson_program",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "lesson_program_id")
     )

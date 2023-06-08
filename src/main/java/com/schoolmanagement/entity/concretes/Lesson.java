@@ -15,16 +15,16 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Lesson implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lessonId;
+    private  Long lessonId;
 
-    private String lessonName ;
+    private String lessonName;
 
-    private Integer creditScore ;
+    private Integer creditScore;
 
-    private Boolean isCompulsory; // bu ders zorunlu mu ??
+    private Boolean isCompulsory; //Zorunlu mu ??
 }

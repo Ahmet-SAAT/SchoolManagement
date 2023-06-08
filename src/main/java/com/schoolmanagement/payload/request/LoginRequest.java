@@ -1,6 +1,5 @@
 package com.schoolmanagement.payload.request;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +16,5 @@ public class LoginRequest {
 
     @NotNull(message = "Password must not be empty")
     private String password;
+
 }

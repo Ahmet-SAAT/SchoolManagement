@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL) //null olan veriler json dosyasinda gözükmesin
 public class AuthResponse {
+
 
     private String username;
     private String ssn;
@@ -19,4 +20,5 @@ public class AuthResponse {
     private String token;
     private String name;
     private String isAdvisor;
+
 }

@@ -18,17 +18,17 @@ import java.util.Map;
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
-    // !!! Bu sinif, yetkilendirme hatasi durumunda islem yapilmasini sagliyor
+    //!!!Bu sinif, yetkilendirme hatasi durumunda islem yapilmasini sagliyor
 
     private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 
-        // logger kullanilarak yetkilendirme hatasi kaydediliyor
+        //Logger kullanilarak yetkilendirme hatasi kaydediliyor
         logger.error("Unauthorized error : {}", authException.getMessage());
 
-        // response icerigi JSON olacak ve HTTP Status Cod da 401, UnAuthorized olacagini setliyorum
+        //response icerigi JSON olacak ve HTTP Status Code'da 401, UnAuthorized olacacagini olusturuyorum
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 

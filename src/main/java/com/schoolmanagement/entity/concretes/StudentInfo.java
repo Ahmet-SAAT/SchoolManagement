@@ -8,25 +8,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class StudentInfo {
+public class StudentInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer absentee ;
+    private Integer absentee;
 
     private Double midtermExam;
     private Double finalExam;
     private Double examAverage;
 
     private String infoNote;
+
 
     @ManyToOne
     @JsonIgnoreProperties("teacher")
@@ -38,13 +40,12 @@ public class StudentInfo {
     @Enumerated(EnumType.STRING)
     private Note letterGrade;
 
-
+    //!!! Lesson - EducationTerm
     @ManyToOne
     @JsonIgnoreProperties("lesson")
     private Lesson lesson;
 
     @OneToOne
     private EducationTerm educationTerm;
-
 
 }
