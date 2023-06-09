@@ -11,38 +11,25 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder(toBuilder = true)
 public class EducationTermRequest implements Serializable {
 
-    @NotNull(message="Education Term must be not be empty")
+
+    @NotNull(message = "Education Term must not be empty")
     private Term term;
 
-    @NotNull(message = "Start Date must not be empty")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    @NotNull(message ="Start Date must not be empty")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
-    @NotNull(message = "End Date must not be empty")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    @NotNull(message ="End Date must not be empty")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    @NotNull(message = "Last Registration Date must not be empty")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    @NotNull(message ="Last Registration Date must not be empty")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate lastRegistrationDate;
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

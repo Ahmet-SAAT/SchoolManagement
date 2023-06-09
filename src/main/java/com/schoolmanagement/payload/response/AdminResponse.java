@@ -1,14 +1,15 @@
 package com.schoolmanagement.payload.response;
 
+import com.schoolmanagement.payload.request.abstracts.BaseUserRequest;
 import com.schoolmanagement.payload.response.abstracts.BaseUserResponse;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+@Getter
+@Setter
 @NoArgsConstructor
-@Data
 @SuperBuilder
 public class AdminResponse extends BaseUserResponse {
-
-
 }

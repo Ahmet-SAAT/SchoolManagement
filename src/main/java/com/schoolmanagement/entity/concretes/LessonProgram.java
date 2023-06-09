@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
 
@@ -23,7 +22,7 @@ public class LessonProgram implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private Day day;
@@ -48,15 +47,15 @@ public class LessonProgram implements Serializable {
     @ManyToMany(mappedBy = "lessonsProgramList", fetch = FetchType.EAGER)
     private Set<Student> students;
 
-    //!!! @PreRemove yazilacak
-    @PreRemove //Bir islem yapmadan önce yapilacaklar - Kayit silindiginde, Student'deki ve Teacher'deki LessonProgram iliskisini ve recordunu siliyoruz.
-    private void removeLessonProgramFromStudent() {
-        teachers.forEach((t) -> {
+    @PreRemove
+    private void removeLessonProgramFromStudent(){
+        teachers.forEach((t)->{
             t.getLessonsProgramList().remove(this);
         });
 
-        students.forEach((s) -> {
+        students.forEach((s)->{
             s.getLessonsProgramList().remove(this);
         });
     }
+
 }

@@ -23,61 +23,44 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    //Not: save() *********************************************************************************************************************************
-    @PostMapping("/save") //http://localhost:8080/auth/login
-    @PreAuthorize("hasAnyAuthority('ADMIN')") //Belirttigimiz kullanicilar yetkilendirilsin
-    public ResponseEntity<?> save(@RequestBody @Valid AdminRequest adminRequest) {
+    // Not: save()  *******************************************************
+    @PostMapping("/save")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<?> save(@RequestBody @Valid AdminRequest adminRequest){
 
         return ResponseEntity.ok(adminService.save(adminRequest));
+
     }
 
 
-    /** save
-     * {
-     *   "username": "john_doe",
-     *   "name": "John",
-     *   "surname": "Doe",
-     *   "birthDay": "1990-01-01",
-     *   "ssn": "123-45-6789",
-     *   "birthPlace": "New York",
-     *   "password": "password123",
-     *   "phoneNumber": "555-123-4567",
-     *   "gender": "MALE",
-     *   "built_in" : false
-     * }
-    */
-
-
-    //Not: getAll() *********************************************************************************************************************************
-    @GetMapping("/getAll") //http://localhost:8080/admin/getAll
-    @PreAuthorize("hasAnyAuthority('ADMIN')") //Belirttigimiz kullanicilar yetkilendirilsin
+    // Not: getALL()********************************************************
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Page<Admin>> getAll(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "name") String sort,
             @RequestParam(value = "type", defaultValue = "desc") String type
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
 
-        //Eger default degerler geliyorsa yani hicbir deger girilmediyse asagidaki kod calisir
-        if (Objects.equals(type, "desc")) {
-            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        // pageable obje olusturulmasi servis katinda yapilabilir
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
+
+        if(Objects.equals(type, "desc")) {
+            pageable = PageRequest.of(page,size,Sort.by(sort).descending());
         }
 
-        Page<Admin>  author =  adminService.getAllAdmin(pageable);
+        Page<Admin> author = adminService.getAllAdmin(pageable);
         return new ResponseEntity<>(author, HttpStatus.OK);
     }
 
-    //Not: delete() *********************************************************************************************************************************
-    @DeleteMapping("/delete/{id}") //delete islemlerini id üzerinden yapmak daha performanslidir ve best practice dir
-    @PreAuthorize("hasAnyAuthority('ADMIN')") //Belirttigimiz kullanicilar yetkilendirilsin
+
+    // Not: delete() *******************************************************
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id){
 
         return ResponseEntity.ok(adminService.deleteAdmin(id));
 
     }
-
-
-
-
 }

@@ -11,7 +11,4 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class ViceDeanRequest extends BaseUserRequest {
-
-
-
 }

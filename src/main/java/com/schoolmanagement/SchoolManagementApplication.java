@@ -12,52 +12,49 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.time.LocalDate;
 
 @SpringBootApplication
-public class SchoolManagementApplication implements CommandLineRunner { //CommandLineRunner ile uygulama basladiginda calismasini istedigimiz kodlari calistir
+public class SchoolManagementApplication implements CommandLineRunner {
 
-    private final UserRoleService userRoleService;
-    private final AdminService adminService;
+	private final UserRoleService userRoleService;
 
-    public SchoolManagementApplication(UserRoleService userRoleService, AdminService adminService) {
-        this.userRoleService = userRoleService;
-        this.adminService = adminService;
-    }
+	private final AdminService adminService;
 
-    public static void main(String[] args) {
-        SpringApplication.run(SchoolManagementApplication.class, args);
-    }
+	public SchoolManagementApplication(UserRoleService userRoleService, AdminService adminService) {
+		this.userRoleService = userRoleService;
+		this.adminService = adminService;
+	}
 
-    @Override
-    public void run(String... args) throws Exception { //Uygulama baslatildiginda calismasini istedigimiz komut satirlari yazilir
+	public static void main(String[] args) {
+		SpringApplication.run(SchoolManagementApplication.class, args);
+	}
 
-        //!!! Role tablosunu doldur
-        if (userRoleService.getAllUserRole().size() == 0) { //role tablosu bossa
+	@Override
+	public void run(String... args) throws Exception {
 
-            userRoleService.save(RoleType.ADMIN);
-            userRoleService.save(RoleType.MANAGER);
-            userRoleService.save(RoleType.ASSISTANTMANAGER);
-            userRoleService.save(RoleType.TEACHER);
-            userRoleService.save(RoleType.STUDENT);
-            userRoleService.save(RoleType.ADVISORTEACHER);
-            userRoleService.save(RoleType.GUESTUSER);
-        }
+		// !!! Role tablomu dolduracagim
+		if(userRoleService.getAllUserRole().size()==0) {
+			userRoleService.save(RoleType.ADMIN);
+			userRoleService.save(RoleType.MANAGER);
+			userRoleService.save(RoleType.ASSISTANTMANAGER);
+			userRoleService.save(RoleType.TEACHER);
+			userRoleService.save(RoleType.STUDENT);
+			userRoleService.save(RoleType.ADVISORTEACHER);
+			userRoleService.save(RoleType.GUESTUSER);
+		}
 
-        //!!! Dene! --> count metodunu UserService yazip, getAllUserRole metodu calistirildiginda calissa daha temiz olur
+		//!!! Admin olusturulacak  built_in
+		if(adminService.countAllAdmin()==0) {
+			AdminRequest admin = new AdminRequest();
+			admin.setUsername("Admin");
+			admin.setSsn("987-99-9999");
+			admin.setPassword("12345678");
+			admin.setName("Admin");
+			admin.setSurname("Admin");
+			admin.setPhoneNumber("555-444-4321");
+			admin.setGender(Gender.FEMALE);
+			admin.setBirthDay(LocalDate.of(2002,2,2));
+			admin.setBirthPlace("US");
+			adminService.save(admin);
+		}
 
-
-        //!!! Admin olusturulacak built_in
-        if (adminService.countAllAdmin() == 0) {
-
-            AdminRequest admin = new AdminRequest();
-            admin.setUsername("Admin");
-            admin.setSsn("987-99-1234");
-            admin.setPassword("12345678");
-            admin.setName("Admin");
-            admin.setSurname("Admin");
-            admin.setPhoneNumber("555-444-4321");
-            admin.setGender(Gender.FEMALE);
-            admin.setBirthDay(LocalDate.of(2002,2,21));
-            admin.setBirthPlace("US");
-            adminService.save(admin);
-        }
-    }
+	}
 }

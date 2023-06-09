@@ -6,18 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder(toBuilder = true)
-public class EducationTermResponse implements Serializable {
+public class EducationTermResponse {
 
-    private Long id;
+
+    private Long id ;
     private Term term;
-    private LocalDate startDate; //10 Juni 2023
-    private LocalDate endDate;  //15 Sept. 2023
-    private LocalDate lastRegistrationDate; //30 Mai 2023
+    private LocalDate startDate;
+    private  LocalDate endDate;
+    private LocalDate lastRegistrationDate; 
+
 }

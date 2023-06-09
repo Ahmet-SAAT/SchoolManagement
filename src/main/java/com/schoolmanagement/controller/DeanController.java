@@ -19,85 +19,68 @@ public class DeanController {
 
     private final DeanService deanService;
 
-    //Not: save() *********************************************************************************************************************************
-    @PostMapping("/save") //http://localhost:8080/dean/save
-    @PreAuthorize("hasAuthority('ADMIN')") //Tek bir kullaniciya rol atamasi yapacaksak hasAuthority kullanabiliriz
+    // Not: Save() *************************************************
+    @PostMapping("/save") // http://localhost:8080/dean/save
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseMessage<DeanResponse> save(@RequestBody @Valid DeanRequest deanRequest) {
 
         return deanService.save(deanRequest);
-    }
-
-    //Not: updateById() *********************************************************************************************************************************
-    @PutMapping("/update/{userId}") //http://localhost:8080/dean/update/1
-    @PreAuthorize("hasAuthority('ADMIN')")
-    //TODO: Dean eklenmeli --getprinciple() metodu ile o anki Dean burayi degistirsin
-    public ResponseMessage<DeanResponse> updateById(@RequestBody @Valid DeanRequest deanRequest, @PathVariable Long userId) { //@Valid --> nullpointerexception'u önler
-
-        return deanService.update(deanRequest, userId);
 
     }
 
-    //Not: delete() *********************************************************************************************************************************
-    @DeleteMapping("/delete/{userId}") //http://localhost:8080/dean/delete/1
+    // Not :  UpdateById() **********************************************
+    @PutMapping("/update/{userId}") // http://localhost:8080/dean/update/1
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseMessage<?> delete(@PathVariable Long userId) {
+    public ResponseMessage<DeanResponse> update(@RequestBody @Valid DeanRequest deanRequest,
+                                                @PathVariable Long userId) {
+         return deanService.update(deanRequest, userId);
+    }
+
+    // Not :  Delete() ****************************************************
+    @DeleteMapping("/delete/{userId}") // http://localhost:8080/dean/delete/1
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseMessage<?> delete(@PathVariable Long userId){
 
         return deanService.deleteDean(userId);
     }
 
-    //Not: getById() *********************************************************************************************************************************
-    @GetMapping("/getManagerById/{userId}") //http://localhost:8080/dean/getManagerById/1
+    // Not :  getById() ************************************************************************
+    @GetMapping("/getManagerById/{userId}") // http://localhost:8080/dean/getManagerById/1
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseMessage<DeanResponse> getDeanById(@PathVariable Long userId) {
+    public ResponseMessage<DeanResponse> getDeanById(@PathVariable Long userId){
 
         return deanService.getDeanById(userId);
+
     }
 
-    //Not: getAll() *********************************************************************************************************************************
-    @GetMapping("/getAll") //http://localhost:8080/dean/getAll
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public List<DeanResponse> getAll() {
+    // Not :  getAll() *************************************************************************
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAll")  // http://localhost:8080/dean/getAll
+    public List<DeanResponse> getAll() {
         return deanService.getAllDean();
     }
 
-    //Not: search() *********************************************************************************************************************************
-    @GetMapping("/search") //http://localhost:8080/dean/search
+    // Not :  Search() *************************************************************************
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<DeanResponse> search( //default degerlerde verilebilir //TODO getAllWithPage
+    // !!! method ismi degismeli--> getAllWithPage olabilir
+    @GetMapping("/search") // hht://localhost:8080/dean/search
+    public Page<DeanResponse> search( // TODO getALLWithPAge
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size,
             @RequestParam(value = "sort") String sort,
             @RequestParam(value = "type") String type
     ) {
 
-        return deanService.search(page, size, sort, type);
-
+        return deanService.search(page,size,sort,type);
     }
 
 
+
+
+
+
+
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -3,13 +3,14 @@ package com.schoolmanagement.payload.dto;
 import com.schoolmanagement.entity.concretes.Dean;
 import com.schoolmanagement.payload.request.DeanRequest;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 @Data
-//@Component //annotatoion olmadan atama yapmak istersek asagidaki gibi yazariz.
+//@Component
 public class DeanDto {
 
-    //Dto - POJO
-    public Dean dtoDean(DeanRequest deanRequest){ //builder annotation olmadan uzunca asagidaki gibi yazmaz zorunda kaliriz
+    // Dto - POJO
+    public Dean dtoDean(DeanRequest deanRequest) {
         return Dean.builder()
                 .username(deanRequest.getUsername())
                 .name(deanRequest.getName())
@@ -22,5 +23,4 @@ public class DeanDto {
                 .gender(deanRequest.getGender())
                 .build();
     }
-
 }

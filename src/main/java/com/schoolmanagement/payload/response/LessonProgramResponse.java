@@ -9,17 +9,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LessonProgramResponse implements Serializable {
+public class LessonProgramResponse {
 
     private Long lessonProgramId;
     private Day day;
@@ -27,20 +26,5 @@ public class LessonProgramResponse implements Serializable {
     private LocalTime stopTime;
     private Set<Lesson> lessonName;
     private EducationTerm educationTerm;
-
-// TODO STUDENT VE TEACHER YAZILINCA EKLEMELER YAPILACAK
-
+    // TODO student ve teacher yazilinca eklemeler yapilacak
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

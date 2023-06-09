@@ -27,9 +27,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebSecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
-    private final AuthEntryPointJwt unauthorizedHandler;
 
-    @Bean //method seviye - singleton
+    private final AuthEntryPointJwt unauthorizedHandler ;
+
+    @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
@@ -39,7 +40,6 @@ public class WebSecurityConfig {
 
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-        //olusan obje üzerinden Encoder ve UserDetailService'i tanistirmaliyiz
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
@@ -52,22 +52,19 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    protected AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+
         return authConfig.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()    //cors --> tarayici tarafli güvenlik protokolleri- server baska bir sunucuda, Db baska bir sunucuda,
-                                              // frontend baska tarafta olabilir  //csrf.disable() etmemmizin sebebi, update metotlarimiz düzgün calismayabilir
+        http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //REST mimaride Session olmaz.
-                .and()
-                .authorizeRequests()
-                .antMatchers(AUTH_WHITE_LIST)
-                .permitAll()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests().antMatchers(AUTH_WHITE_LIST).permitAll()
                 .anyRequest().authenticated();
+
         http.headers().frameOptions().sameOrigin();
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -83,48 +80,22 @@ public class WebSecurityConfig {
             "/*.json",
             "/contactMessages/save",
             "/auth/login"
+
     };
 
     @Bean
-    public WebMvcConfigurer corsConfigurer(){
+    public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
+
             @Override
             public void addCorsMappings(CorsRegistry registry) {
 
-                registry.addMapping("/**") // tüm URL'leri kapsayacagini söyledik
-                        .allowedOrigins("*") // Tüm kaynaklara izin veriliyor
-                        .allowedHeaders("*") //Tüm header'lara izin verilecegini söyledik
-                        .allowedMethods("*"); //Bütün HTTP metodlarina izin verildi
+                registry.addMapping("/**") // tum URL leri kapsayacagini soyledik
+                        .allowedOrigins("*") // tum kaynaklara izin veriliyor
+                        .allowedHeaders("*") // tum header lara izin verilecegini soyledik
+                        .allowedMethods("*"); // butun HTTP methodlarina izin verildi
             }
         };
     }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

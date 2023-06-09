@@ -1,24 +1,25 @@
 package com.schoolmanagement.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.schoolmanagement.entity.concretes.EducationTerm;
+import com.schoolmanagement.entity.concretes.Lesson;
 import com.schoolmanagement.entity.enums.Day;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalTime;
 import java.util.Set;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder(toBuilder = true)
-public class LessonProgramRequest implements Serializable {
+public class LessonProgramRequest {
 
     @NotNull(message="Please enter day")
     private Day day;
@@ -38,8 +39,3 @@ public class LessonProgramRequest implements Serializable {
     @NotNull(message="Please enter education term")
     private Long educationTermId;
 }
-
-
-
-
-

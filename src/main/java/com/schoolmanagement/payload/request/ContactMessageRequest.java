@@ -1,7 +1,5 @@
 package com.schoolmanagement.payload.request;
 
-import com.schoolmanagement.payload.response.ContactMessageResponse;
-import com.schoolmanagement.payload.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,13 +11,11 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder(toBuilder = true)
 public class ContactMessageRequest implements Serializable {
-
-    //Datalar, ön taraftan DB'ye gidecegi icin validasyon yapilmasi gereklidir.
 
     @NotNull(message = "Please enter name")
     @Size(min=4, max=16, message = "Your name should be at least 4 chars")
@@ -40,5 +36,4 @@ public class ContactMessageRequest implements Serializable {
     @Size(min=4, max=50, message = "Your message should be at least 4 chars")
     @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Your message must consist of the characters .")
     private String message ;
-
 }

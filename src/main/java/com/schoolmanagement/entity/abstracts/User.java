@@ -10,24 +10,17 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.io.Serializable; //Best Practice olarak serilestirme entity siniflarina eklenir.
+import java.io.Serializable;
 import java.time.LocalDate;
 
-@MappedSuperclass //Db de user tablosu olusmadan bu sinifin anac sinif olarak kullanilmasini saglar
+@MappedSuperclass // Db de user tablosu olusmadan bu sinifin anac sinif olarak kullanilmasini sagliyor
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder //Alt siniflarin User sinifinin builder özelliklerini kullanabilmesine izin verir
-
-//@SuperBuilder --> ilgili sinifin field'larini bu classdan türetilen siniflara aktarirken (sadece java tarafinda). Eger atada @SuperBuilder varsa child da da eklenir
-//@MappedSuperclass --> annotation'u da db de table olusturmamasina ragmen türettigi entitylere field'larini aktariyor ve türetilen entity siniflarinin db de kolonlarinin olusmasini sagliyor
-//@Builder(toBuilder = true) --> bize farkli farkli parametreli constructor olusturmamizi saglar. Yeni bir nesne olusturmak yerine varolan nesnenin kopyasini alarak degisiklik yapmamizi saglar. Eklenen class icin
-            //Builder DP olusturuyor. Default da degeri false gelir.
-            /*
-                         Builder neseyi Örnek örnek = Örnek.özellik1().özellik2().build gibi build etmeye yararken, toBuilder olan bir nesnenin üzerinden farklı bir nesne yapmaya yarıyor.
-                         Örnek yeni örnek = örnek.toBuilder().özellik1(farklı bir özellik).build
-             */
-public abstract class User implements Serializable { //Ortak classlar icin bu class'i Base olarak kullanacagiz
+@SuperBuilder // Alt siniflarin USer sinifinin builder ozelliklerini kullanabilmesine izin verir
+// !!! @SuperBuilder ile @Builder arasindaki temel fark :https://www.baeldung.com/lombok-builder-inheritance
+// !!! @SuperBuilder in duzgun calismasi icin hem parent a hem de childa @SuperBuilder eklenmeli
+public abstract class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,8 +41,8 @@ public abstract class User implements Serializable { //Ortak classlar icin bu cl
 
     private String birthPlace;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Client'den DB'ye giderken yazma islemi olsun, Db'den Client'e giderken Okuma islemi olmasin.
-    private String password;                               // Hassas veri oldugu icin okuma islemlerinde kullanilmaz
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // hassas veri oldugu icin okuma islemlerinde kullanilmasin
+    private String password;
 
     @Column(unique = true)
     private String phoneNumber;
@@ -59,32 +52,12 @@ public abstract class User implements Serializable { //Ortak classlar icin bu cl
     private UserRole userRole;
 
     private Gender gender;
+
+
+
+
+
+
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
