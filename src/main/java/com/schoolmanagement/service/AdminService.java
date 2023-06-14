@@ -63,31 +63,7 @@ public class AdminService {
 
     }
 
-    public void checkDuplicate(String username, String ssn, String phone){
-        if(adminRepository.existsByUsername(username) ||
-                deanRepository.existsByUsername(username) ||
-                studentRepository.existsByUsername(username) ||
-                teacherRepository.existsByUsername(username) ||
-                viceDeanRepository.existsByUsername(username) ||
-                guestUserRepository.existsByUsername(username)) {
-            throw new ConflictException(String.format(Messages.ALREADY_REGISTER_MESSAGE_USERNAME, username));
-        } else if (adminRepository.existsBySsn(ssn) ||
-                deanRepository.existsBySsn(ssn) ||
-                studentRepository.existsBySsn(ssn) ||
-                teacherRepository.existsBySsn(ssn) ||
-                viceDeanRepository.existsBySsn(ssn) ||
-                guestUserRepository.existsBySsn(ssn)) {
-            throw new ConflictException(String.format(Messages.ALREADY_REGISTER_MESSAGE_SSN, ssn));
-        } else if (adminRepository.existsByPhoneNumber(phone) ||
-                deanRepository.existsByPhoneNumber(phone) ||
-                studentRepository.existsByPhoneNumber(phone) ||
-                teacherRepository.existsByPhoneNumber(phone) ||
-                viceDeanRepository.existsByPhoneNumber(phone) ||
-                guestUserRepository.existsByPhoneNumber(phone)) {
-            throw new ConflictException(String.format(Messages.ALREADY_REGISTER_MESSAGE_PHONE_NUMBER, phone));
-        }
 
-    }
 
     protected Admin createAdminForSave(AdminRequest request){
 
