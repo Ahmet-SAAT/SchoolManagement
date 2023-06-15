@@ -35,6 +35,7 @@ public class LessonProgramService {
     private final LessonService lessonService;
     private final LessonProgramDto lessonProgramDto;
     private final EducationTermService educationTermService;
+    private final StudentService studentService;
 
 
     // Not :  Save() *************************************************************************
@@ -175,7 +176,7 @@ public class LessonProgramService {
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
                 .lessonName(lessonProgram.getLesson())
-                //TODO Student yazilinca buraya ekleme yapilacak
+               // .students(lessonProgram.getStudents().stream().map(this::).collect(Collectors.toSet()))
                 .build();
     }
 
