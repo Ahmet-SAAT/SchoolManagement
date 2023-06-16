@@ -214,7 +214,7 @@ public class StudentService {
 
     public List<StudentResponse> getStudentByName(String studentName) {
 
-        return studentRepository.getStudentByNameContain(studentName)
+        return studentRepository.getStudentByNameContaining(studentName)
                 .stream()
                 .map(this::createStudentResponse)
                 .collect(Collectors.toList());
@@ -282,4 +282,11 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
+    public boolean existByUserName(String username) {
+        return studentRepository.existsByUsername(username);
+    }
+
+    public boolean existById(Long studentId) {
+        return studentRepository.existsById(studentId);
+    }
 }

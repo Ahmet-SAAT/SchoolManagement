@@ -34,6 +34,11 @@ public class LessonProgram implements Serializable {
     private LocalTime stopTime;
 
     @ManyToMany
+    @JoinTable(
+            name = "lesson_program_lesson",
+            joinColumns = @JoinColumn(name = "lessonprogram_id"),
+            inverseJoinColumns = @JoinColumn(name = "lesson_id")
+    )
     private Set<Lesson> lesson;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -48,12 +53,12 @@ public class LessonProgram implements Serializable {
     private Set<Student> students;
 
     @PreRemove
-    private void removeLessonProgramFromStudent(){
-        teachers.forEach((t)->{
+    private void removeLessonProgramFromStudent() {
+        teachers.forEach((t) -> {
             t.getLessonsProgramList().remove(this);
         });
 
-        students.forEach((s)->{
+        students.forEach((s) -> {
             s.getLessonsProgramList().remove(this);
         });
     }

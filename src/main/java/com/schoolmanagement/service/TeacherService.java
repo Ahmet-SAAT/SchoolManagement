@@ -243,4 +243,20 @@ public class TeacherService {
                 .build();
 
     }
+
+
+    // !!! StudentInfoService icin eklendi
+    public Teacher getTeacherByUsername(String username) {
+
+        if(!teacherRepository.existsByUsername(username)) {   //  return findByUsername(username).orElseThrow
+            throw  new ResourceNotFoundException(Messages.NOT_FOUND_USER_MESSAGE);
+        }
+
+        return teacherRepository.getTeacherByUsername(username);
+    }
+
+
+    public boolean existByUserName(String username) {
+     return teacherRepository.existsByUsername(username);
+    }
 }
