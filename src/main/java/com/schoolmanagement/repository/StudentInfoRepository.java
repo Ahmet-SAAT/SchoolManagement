@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.stream.DoubleStream;
 
 public interface StudentInfoRepository extends JpaRepository<StudentInfo, Long> {
+
+
     List<StudentInfo> getAllByStudentId_Id(Long studentId);
 
     boolean existsByIdEquals(Long studentInfoId);

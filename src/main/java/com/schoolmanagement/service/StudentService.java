@@ -289,4 +289,9 @@ public class StudentService {
     public boolean existById(Long studentId) {
         return studentRepository.existsById(studentId);
     }
+
+    //meetservice ici
+    public List<Student> getStudentByIds(Long[] studentIds) {
+        return studentRepository.findByIdsEquals(studentIds);
+    }
 }

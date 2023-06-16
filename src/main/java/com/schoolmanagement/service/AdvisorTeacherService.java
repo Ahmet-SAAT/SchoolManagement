@@ -114,4 +114,11 @@ public class AdvisorTeacherService {
     public Optional<AdvisorTeacher> getAdvisorTeacherById(Long id) {
         return advisorTeacherRepository.findById(id);
     }
+
+
+    //zoomservice icin olusturuldu
+    public Optional<AdvisorTeacher> getAdvisorTeacherByUsername(String username) {
+       return advisorTeacherRepository.findByTeacher_UsernameEquals(username);
+
+    }
 }

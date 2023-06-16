@@ -10,4 +10,7 @@ public interface AdvisorTeacherRepository extends JpaRepository<AdvisorTeacher,L
 
 
    Optional<AdvisorTeacher> getAdvisorTeacherByTeacher_Id(Long advisorTeacherId);
+
+
+    Optional<AdvisorTeacher> findByTeacher_UsernameEquals(String username);
 }

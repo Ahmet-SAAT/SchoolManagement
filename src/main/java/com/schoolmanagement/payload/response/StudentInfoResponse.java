@@ -22,7 +22,7 @@ public class StudentInfoResponse {
     private String infoNote;
     private String lessonName;
     private int creditScore;
-    private boolean isCompulsory;
+    private boolean isCompulsory;//is ile baslayan fieldlarin data tipi wrapper olursa get metodunda sorun olabiliyor
     private Term educationTerm;
     private Double average;
     private Note Note;

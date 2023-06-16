@@ -15,11 +15,14 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,9 +35,9 @@ public class StudentInfoService {
     private final LessonService lessonService;
     private final EducationTermService educationTermService;
 
-    @Value("${midterm.exam.impact.percentage}")
+    @Value("${midterm.exam.impact.percentage}")//applicationda bu degiskeni tanimladik oradan alacagiz
     private Double midtermExamPercentage;
-    @Value("${final.exam.impact.percentage}")
+    @Value("${final.exam.impact.percentage}")//applicationda bu degiskeni tanimladik oradan alacagiz
     private Double finalExamPercentage;
 
     // Not: save()****************************************************************
@@ -296,7 +299,16 @@ public class StudentInfoService {
     }
 
 
-
-
     // Not: getAllWithPage()******************************************************
+
+    public Page<StudentInfoResponse> search(int page, int size, String sort, String type) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        if (Objects.equals(type, "desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        }
+
+        return studentInfoRepository.findAll(pageable).map(this::createResponse);
+    }
+
 }

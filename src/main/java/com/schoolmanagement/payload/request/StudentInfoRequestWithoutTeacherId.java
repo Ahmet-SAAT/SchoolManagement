@@ -21,8 +21,8 @@ public class StudentInfoRequestWithoutTeacherId {
     @NotNull(message = "Please enter midterm exam")
     private Double midtermExam;
 
-    @DecimalMax("100.0")
-    @DecimalMin("0.0")
+    @DecimalMax("100.0")//max 100 girilebilir
+    @DecimalMin("0.0")//min 0 grilebilir
     @NotNull(message = "Please enter final exam")
     private Double finalExam;
 

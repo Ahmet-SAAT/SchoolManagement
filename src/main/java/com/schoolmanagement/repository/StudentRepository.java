@@ -33,4 +33,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query(value = "SELECT s FROM Student s WHERE s.advisorTeacher.teacher.username =:username")
         // @Query(value= "SELECT s FROM Student s JOIN s.advisorTeacher at JOIN at.teacher t WHERE t.username=:username")
-    List<Student> getStudentByAdvisorTeacher_Username(String username);}
+    List<Student> getStudentByAdvisorTeacher_Username(String username);
+
+    @Query("Select s FROM Student s Where s.id IN :id ")
+    List<Student> findByIdsEquals(Long[] id);
+}
