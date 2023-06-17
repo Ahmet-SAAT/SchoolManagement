@@ -18,7 +18,7 @@ public class AdvisorTeacherController {
 
 
     //Not:   deleteAdvisorTeacher() ********************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @DeleteMapping("/delete/{id}")
     public ResponseMessage<?> deleteAdvisorTeacher(@PathVariable Long id){
      return     advisorTeacherService.deleteAdvisorTeacher(id);
@@ -27,7 +27,7 @@ public class AdvisorTeacherController {
 
     //Not:   getAllAdvisorTeacher() ********************************************
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/getAll")
     public List<AdvisorTeacherResponse> getAllAdvisorTeacher() {
         return advisorTeacherService.getAllAdvisorTeacher();
@@ -36,7 +36,7 @@ public class AdvisorTeacherController {
 
         //Not:   getAllAdvisorTeacherWithPage() ********************************************
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/search")
     public Page<AdvisorTeacherResponse> search(
             @RequestParam(value = "page") int page,

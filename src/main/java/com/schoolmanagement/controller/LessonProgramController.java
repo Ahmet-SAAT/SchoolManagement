@@ -23,13 +23,13 @@ public class LessonProgramController {
 
     // Not :  Save() *************************************************************************
     @PostMapping("/save")  // http://localhost:8080/lessonPrograms/save
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     public ResponseMessage<LessonProgramResponse> save(@RequestBody @Valid LessonProgramRequest lessonProgramRequest) {
         return lessonProgramService.save(lessonProgramRequest);
     }
     // Not :  getAll() *************************************************************************
     @GetMapping("/getAll")  // http://localhost:8080/lessonPrograms/getAll
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER','TEACHER','STUDENT')")
     public List<LessonProgramResponse> getAll() {
         return lessonProgramService.getAllLessonProgram();
     }
@@ -37,33 +37,33 @@ public class LessonProgramController {
     // Not :  getById() ************************************************************************
 
     @GetMapping("/getById/{id}") //http://localhost:8080/lessonPrograms/getById/1
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     public LessonProgramResponse getById(@PathVariable Long id) {
         return lessonProgramService.getByLessonProgramId(id);
     }
 
     // Not :  getAllLessonProgramUnassigned() **************************************************
     @GetMapping("/getAllUnassigned") //http://localhost:8080/lessonPrograms/getAllUnassigned
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER','TEACHER','STUDENT')")
     public List<LessonProgramResponse> getAllUnassigned() {
         return lessonProgramService.getAllLessonProgramUnassigned();
     }
 
     // Not :  getAllLessonProgramAssigned() **************************************************
     @GetMapping("/getAllAssigned") //http://localhost:8080/lessonPrograms/getAllAssigned
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER','TEACHER','STUDENT')")
     public List<LessonProgramResponse> getAllAssigned() {
         return lessonProgramService.getAllLessonProgramAssigned();
     }
 
     // Not :  Delete() *************************************************************************
     @DeleteMapping("/delete/{id}") //http://localhost:8080/lessonPrograms/delete/1
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     public ResponseMessage delete (@PathVariable Long id) {
         return lessonProgramService.deleteLessonProgram(id);
     }
     // Not :  getLessonProgramByTeacher() ******************************************************
-    @PreAuthorize("hasAnyAuthority('TEACHER','ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('TEACHER','ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/getAllLessonProgramByTeacher")  //http://localhost:8080/lessonPrograms/getAllLessonProgramByTeacher
     public Set<LessonProgramResponse> getAllLessonProgramByTeacherId(HttpServletRequest httpServletRequest) {
 
@@ -73,7 +73,7 @@ public class LessonProgramController {
     }
 
     // Not :  getLessonProgramByStudent() ******************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER','TEACHER')")
     @GetMapping("/getAllLessonProgramByStudent") //http://localhost:8080/lessonPrograms/getAllLessonProgramByStudent
     public Set<LessonProgramResponse> getAllLessonProgramByStudent(HttpServletRequest httpServletRequest) {
 
@@ -82,7 +82,7 @@ public class LessonProgramController {
     }
 
     // Not :  getAllWithPage() ******************************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER','TEACHER','STUDENT')")
     @GetMapping("/search")
     public Page<LessonProgramResponse> search(
             @RequestParam(value = "page") int page,

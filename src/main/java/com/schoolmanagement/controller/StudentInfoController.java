@@ -108,7 +108,7 @@ public class StudentInfoController {
 
 
     // Not: getStudentInfoByStudentId()*************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER','TEACHER')")
     @GetMapping("/getByStudentId/{studentId}")
     public ResponseEntity<List<StudentInfoResponse>> getStudentId(@PathVariable Long studentId) {
 
@@ -118,7 +118,7 @@ public class StudentInfoController {
     }
 
     // Not: getStudentInfoById()*******************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER','TEACHER')")
     @GetMapping("/get/{id}")
     public ResponseEntity<StudentInfoResponse> get(@PathVariable Long id) {
 
@@ -129,7 +129,7 @@ public class StudentInfoController {
 
     // Not: getAllWithPage()******************************************************
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/search")
     public Page<StudentInfoResponse> search(
             @RequestParam(value = "page") int page,

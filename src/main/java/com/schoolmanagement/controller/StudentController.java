@@ -23,28 +23,28 @@ public class StudentController {
 
 
     // Not: Save() **********************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @PostMapping("/save")
     public ResponseMessage<StudentResponse> save(@RequestBody @Valid StudentRequest studentRequest) {
         return studentService.save(studentRequest);
     }
 
     // Not: changeActiveStatus() *********************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/changeStatus")
     public ResponseMessage<?> changeStatus(@RequestParam Long id, @RequestParam boolean status) {
         return studentService.changeStatus(id, status);
     }
 
     // Not: getAllStudent() *******************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/getAll")
     public List<StudentResponse> getAllStudent() {
         return studentService.getAllStudent();
     }
 
     // Not: updateStudent() ******************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @PutMapping("/update/{userId}")
     public ResponseMessage<StudentResponse> updateStudent(@PathVariable Long userId,
                                                           @RequestBody @Valid StudentRequest studentRequest) {
@@ -53,7 +53,7 @@ public class StudentController {
     }
 
     // Not: deleteStudent() ******************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @DeleteMapping("/delete/{studentId}")
     public ResponseMessage<?> deleteStudent(@PathVariable Long studentId) {
 
@@ -61,7 +61,7 @@ public class StudentController {
     }
 
     // Not: getStudentByName() ***************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/getStudentByName")
     public List<StudentResponse> getStudentByName(@RequestParam(name = "name") String studentName) {
 
@@ -69,7 +69,7 @@ public class StudentController {
     }
 
     // Not: getStudentById() ******************************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/getStudentById")
     // donen deger POJO olmamali DTO olarak donmemiz gerekiyor ResponseMessage<StudentResponse>
     public Student getStudentById(@RequestParam(name = "id") Long id) {
@@ -78,7 +78,7 @@ public class StudentController {
 
 
     // Not: getAllStudentWithPage() ***********************************************
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     @GetMapping("/search")
     public Page<StudentResponse> search(
             @RequestParam(value = "page") int page,
