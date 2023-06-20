@@ -11,6 +11,7 @@ import com.schoolmanagement.payload.request.StudentRequest;
 import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.payload.response.StudentResponse;
 import com.schoolmanagement.repository.StudentRepository;
+import com.schoolmanagement.utils.CheckParameterUpdateMethod;
 import com.schoolmanagement.utils.CheckSameLessonProgram;
 import com.schoolmanagement.utils.FieldControl;
 import com.schoolmanagement.utils.Messages;
@@ -157,7 +158,10 @@ public class StudentService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format(Messages.NOT_FOUND_ADVISOR_MESSAGE, studentRequest.getAdvisorTeacherId())));
         // Dublicate Kontrolu
-        fieldControl.checkDuplicate(studentRequest.getUsername(), studentRequest.getSsn(), studentRequest.getPhoneNumber(), studentRequest.getEmail());
+        if (!CheckParameterUpdateMethod.checkParameter(student,studentRequest)){
+            fieldControl.checkDuplicate(studentRequest.getUsername(), studentRequest.getSsn(),
+                    studentRequest.getPhoneNumber(), studentRequest.getEmail());
+        }
 
         // !!! DTO -> POJO
         Student updatedStudent = createUpdatedStudent(studentRequest, userId);

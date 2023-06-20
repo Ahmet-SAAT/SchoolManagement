@@ -36,7 +36,16 @@ public class AdminService {
     private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
 
+
+
     // Not: save()  *******************************************************
+
+
+   /* {
+        "username" : "Admin",
+            "password" : "12345678"
+    }*/
+
     public ResponseMessage save(AdminRequest request) {
 
         // !!! Girilen username - ssn- phoneNumber unique mi kontrolu
