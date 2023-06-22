@@ -1,5 +1,4 @@
 package com.schoolmanagement.service;
-
 import com.schoolmanagement.entity.concretes.AdvisorTeacher;
 import com.schoolmanagement.entity.concretes.Meet;
 import com.schoolmanagement.entity.concretes.Student;
@@ -15,7 +14,6 @@ import com.schoolmanagement.repository.StudentRepository;
 import com.schoolmanagement.utils.Messages;
 import com.schoolmanagement.utils.TimeControl;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.bridge.Message;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,31 +35,27 @@ public class MeetService {
     private final StudentRepository studentRepository;
     private final StudentService studentService;
 
-
-    //NOT :SAVE()**************************************
+    // Not :  Save() *************************************************************************
     public ResponseMessage<MeetResponse> save(String username, MeetRequestWithoutId meetRequest) {
 
-        AdvisorTeacher advisorTeacher = advisorTeacherService.getAdvisorTeacherByUsername(username).orElseThrow(() ->
+        AdvisorTeacher advisorTeacher = advisorTeacherService.getAdvisorTeacherByUsername(username).orElseThrow(()->
                 new ResourceNotFoundException(String.format(Messages.NOT_FOUND_ADVISOR_MESSAGE_WITH_USERNAME, username)));
 
-        //toplanti saati kontrolu
-        if (TimeControl.check(meetRequest.getStartTime(), meetRequest.getStopTime()))
+        // !!! toplanti saat kontrolu
+        if(TimeControl.check(meetRequest.getStartTime(), meetRequest.getStopTime()))
             throw new BadRequestException(Messages.TIME_NOT_VALID_MESSAGE);
-        //tek satir varsa suslu parantez koyulmayabilir.Birden fazla satir var ve suslu parantz yoksa
-        // if sadece ilk satiri alir digerleri ifsiz calisir.
 
-        //toplantiya katilacak ogrenciler icin yeni meeting saatlerinde cakisma var mi kontrolu
+        // !!! toplantiya katilacak ogrenciler icin yeni meeting saatlerinde cakisma var mi kontrolu
         for (Long studentId : meetRequest.getStudentIds()) {
-            boolean check = studentRepository.existsById(studentId);
-            if (!check) throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, studentId));
+            boolean check =    studentRepository.existsById(studentId);
+            if(!check) throw  new ResourceNotFoundException(String.format(Messages.NOT_FOUND_USER2_MESSAGE, studentId));
 
-            checkMeetConflict(studentId, meetRequest.getDate(), meetRequest.getStartTime(), meetRequest.getStopTime());
-
+            checkMeetConflict(studentId, meetRequest.getDate(),meetRequest.getStartTime(), meetRequest.getStopTime());
         }
 
-        //Meete katilacak olan studentlar getiriliyor
+        // !!! Meet e katilacak olan Student lar getiriliyor
         List<Student> students = studentService.getStudentByIds(meetRequest.getStudentIds());
-        //meet nesnesi olusturulup ilgili fieldlar setleniyor
+        // !!! Meet nesnesi olusturup ilgili fieldlar setleniyor
         Meet meet = new Meet();
         meet.setDate(meetRequest.getDate());
         meet.setStartTime(meetRequest.getStartTime());
@@ -70,38 +64,41 @@ public class MeetService {
         meet.setDescription(meetRequest.getDescription());
         meet.setAdvisorTeacher(advisorTeacher);
 
-        //save islemi
+        //!!! save islemi
         Meet savedMeet = meetRepository.save(meet);
-        //response nesnesi olusturuluyor
+
+        //!!! Response nesnesi olusturuluyor
+
         return ResponseMessage.<MeetResponse>builder()
-                .message("Meet is Saved Successfully")
+                .message("Meet Saved Successfully")
                 .httpStatus(HttpStatus.CREATED)
                 .object(createMeetResponse(savedMeet))
                 .build();
     }
 
-
-    private void checkMeetConflict(Long studentId, LocalDate date, LocalTime startTime, LocalTime stopTime) {
+    private void checkMeetConflict(Long studentId, LocalDate date, LocalTime startTime, LocalTime stopTime){
 
         List<Meet> meets = meetRepository.findByStudentList_IdEquals(studentId);
         // TODO : meet size kontrol edilecek
-        for (Meet meet : meets) {
+        for(Meet meet : meets){
 
-            LocalTime existingStartTime = meet.getStartTime();
-            LocalTime existingStopTime = meet.getStopTime();
+            LocalTime existingStartTime =  meet.getStartTime();
+            LocalTime existingStopTime =  meet.getStopTime();
 
-            if (meet.getDate().equals(date) &&
+
+            if(meet.getDate().equals(date) &&
                     ((startTime.isAfter(existingStartTime) && startTime.isBefore(existingStopTime)) || // yeni gelen meetingin startTime bilgisi mevcut mettinglerden herhangi birinin startTim,e ve stopTime arasinda mi ???
                             (stopTime.isAfter(existingStartTime) && stopTime.isBefore(existingStopTime)) || //  yeni gelen meetingin stopTime bilgisi mevcut mettinglerden herhangi birinin startTim,e ve stopTime arasinda mi ???
                             (startTime.isBefore(existingStartTime) && stopTime.isAfter(existingStopTime)) ||
-                            (startTime.equals(existingStartTime) && stopTime.equals(existingStopTime)))) {
-                throw new ConflictException(Messages.MEET_EXIST_MESSAGE);
+                            (startTime.equals(existingStartTime) && stopTime.equals(existingStopTime)))){
+                //throw new ConflictException(Messages.MEET_EXIST_MESSAGE);
+                throw new ConflictException("HATAAAAA");
             }
+
+
         }
 
     }
-
-
     private MeetResponse createMeetResponse(Meet meet) {
         return MeetResponse.builder()
                 .id(meet.getId())
@@ -116,36 +113,35 @@ public class MeetService {
                 .build();
     }
 
-    //NOT :getAll()**************************************
+    // Not : getAll() *************************************************************************
     public List<MeetResponse> getAll() {
-        return meetRepository.findAll().
-                stream().
-                map(this::createMeetResponse).
-                collect(Collectors.toList());
+
+        return meetRepository.findAll()
+                .stream()
+                .map(this::createMeetResponse)
+                .collect(Collectors.toList());
     }
 
-
-
-    //NOT :getMeetById()**************************************
+    // Not :  getMeetById() ********************************************************************
     public ResponseMessage<MeetResponse> getMeetById(Long meetId) {
 
-       Meet meet= meetRepository.findById(meetId).orElseThrow(()-> new ResourceNotFoundException(String.format(Messages.MEET_NOT_FOUND_MESSAGE,meetId)) );
- return ResponseMessage.<MeetResponse>builder()
-         .message("MeetSuccessfully Found")
-         .httpStatus(HttpStatus.OK)
-         .object(createMeetResponse(meet))
-         .build();
+        Meet meet = meetRepository.findById(meetId).orElseThrow(()->
+                new ResourceNotFoundException(String.format(Messages.MEET_NOT_FOUND_MESSAGE,meetId)));
+
+        return ResponseMessage.<MeetResponse>builder()
+                .message("Meet Successfully found")
+                .httpStatus(HttpStatus.OK)
+                .object(createMeetResponse(meet))
+                .build();
     }
 
-
+    // Not : getAllMeetByAdvisorAsPage() **************************************************
     public Page<MeetResponse> getAllMeetByAdvisorTeacherAsPage(String username, Pageable pageable) {
+        AdvisorTeacher advisorTeacher = advisorTeacherService.getAdvisorTeacherByUsername(username).orElseThrow(()->
+                new ResourceNotFoundException(String.format(Messages.NOT_FOUND_ADVISOR_MESSAGE_WITH_USERNAME,username)));
 
-        AdvisorTeacher advisorTeacher=advisorTeacherService.getAdvisorTeacherByUsername(username).orElseThrow(
-                ()->new ResourceNotFoundException(String.format(Messages.NOT_FOUND_ADVISOR_MESSAGE_WITH_USERNAME,username)) );
-
-       return meetRepository.findByAdvisorTeacher_IdEquals(advisorTeacher.getId(),pageable).
-               map(this::createMeetResponse);
-
+        return meetRepository.findByAdvisorTeacher_IdEquals(advisorTeacher.getId(), pageable) // advisorTeacher.getMeet()
+                .map(this::createMeetResponse);
     }
 
     // Not :  getAllMeetByAdvisorTeacherAsList() *********************************************
@@ -162,21 +158,23 @@ public class MeetService {
 
     // Not :  delete() ***********************************************************************
     public ResponseMessage<?> delete(Long meetId) {
-        Meet meet=meetRepository.findById(meetId).orElseThrow(()->
-                new ResourceNotFoundException(String.format(Messages.MEET_NOT_FOUND_MESSAGE,meetId)));
-        meetRepository.delete(meet);
-        return ResponseMessage.builder().
-                message("Meetdeleted successfully").
-                httpStatus(HttpStatus.OK).
-                build();
+
+        Meet meet = meetRepository.findById(meetId).orElseThrow(()->
+                new ResourceNotFoundException(String.format(Messages.MEET_NOT_FOUND_MESSAGE, meetId)));
+
+        meetRepository.deleteById(meetId);
+
+        return ResponseMessage.builder()
+                .message("Meet Deleted Successfully")
+                .httpStatus(HttpStatus.OK)
+                .build();
     }
-
-
     // Not :  update() ***********************************************************************
     public ResponseMessage<MeetResponse> update(UpdateMeetRequest meetRequest, Long meetId) {
-
+        // !!!  ODEV : save-update kontrol kisimlari ortak method uzerinden cagirilacak
         Meet getMeet = meetRepository.findById(meetId).orElseThrow(()->
                 new ResourceNotFoundException(String.format(Messages.MEET_NOT_FOUND_MESSAGE, meetId)));
+
 
         // !!! Time Control
         if (TimeControl.check(meetRequest.getStartTime(),meetRequest.getStopTime())) {
@@ -184,9 +182,16 @@ public class MeetService {
         }
 
         // !!! her ogrenci icin meet conflict kontrolu
-        for (Long studentId : meetRequest.getStudentIds()) {
-            checkMeetConflict(studentId,meetRequest.getDate(),meetRequest.getStartTime(),meetRequest.getStopTime());
+        // !!! if in icinde request den gelen meet ile orjinal meet objesinde date,startTime ve stoptime
+        // bilgilerinde degisiklik yapildiysa checkMeetConflict metoduna girmesi saglaniyor
+        if(!(getMeet.getDate().equals(meetRequest.getDate()) &&
+                getMeet.getStartTime().equals(meetRequest.getStartTime()) &&
+                getMeet.getStopTime().equals(meetRequest.getStopTime())) ){
+            for (Long studentId : meetRequest.getStudentIds()) {
+                checkMeetConflict(studentId,meetRequest.getDate(),meetRequest.getStartTime(),meetRequest.getStopTime());
+            }
         }
+
 
         List<Student> students = studentService.getStudentByIds(meetRequest.getStudentIds());
         //!!! DTO--> POJO
@@ -213,9 +218,6 @@ public class MeetService {
                 .description(updateMeetRequest.getDescription())
                 .build();
     }
-
-
-
     // Not :  getAllMeetByStudent() **********************************************************
     public List<MeetResponse> getAllMeetByStudentByUsername(String username) {
         Student student = studentService.getStudentByUsernameForOptional(username).orElseThrow(()->
@@ -227,17 +229,10 @@ public class MeetService {
                 .collect(Collectors.toList());
     }
 
-
     // Not :  getAllWithPage() **********************************************************
     public Page<MeetResponse> search(int page, int size) {
 
         Pageable pageable = PageRequest.of(page,size, Sort.by("id").descending());
         return meetRepository.findAll(pageable).map(this::createMeetResponse);
     }
-
-
-
-
-
-
 }

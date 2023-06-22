@@ -4,7 +4,9 @@ package com.schoolmanagement.repository;
 import com.schoolmanagement.entity.concretes.Student;
 import com.schoolmanagement.payload.response.StudentResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +37,17 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
         // @Query(value= "SELECT s FROM Student s JOIN s.advisorTeacher at JOIN at.teacher t WHERE t.username=:username")
     List<Student> getStudentByAdvisorTeacher_Username(String username);
 
+
     @Query("Select s FROM Student s Where s.id IN :id ")
     List<Student> findByIdsEquals(Long[] id);
 
+
     @Query("SELECT s FROM Student s WHERE s.username=:username")
     Optional<Student> findByUsernameEqualsForOptional(String username);
+
+    @Modifying
+    @Query("DELETE FROM Student s WHERE s.id = :id")
+    void deleteById(@Param("id") Long id);
+
+
 }
