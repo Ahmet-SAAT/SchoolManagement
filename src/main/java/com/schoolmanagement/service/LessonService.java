@@ -121,6 +121,7 @@ public class LessonService {
     }
 
 
+
     // Not: StudentInfoService icin yazildi
     public Lesson getLessonById(Long lessonId) {
 
@@ -129,6 +130,7 @@ public class LessonService {
 
         return lessonRepository.findByLessonIdEquals(lessonId);
     }
+
 
 
 

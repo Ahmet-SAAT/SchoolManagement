@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
     boolean existsByUsername(String username);
@@ -49,5 +50,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("DELETE FROM Student s WHERE s.id = :id")
     void deleteById(@Param("id") Long id);
 
-
+    @Query(value = "SELECT s FROM Student s WHERE s.id IN :id")
+    Set<Student> findByIdsEquals(List<Long> id);
 }

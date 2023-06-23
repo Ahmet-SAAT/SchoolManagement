@@ -95,7 +95,8 @@ public class StudentController {
     public ResponseMessage<StudentResponse> chooseLesson(HttpServletRequest request,
                                                          @RequestBody @Valid ChooseLessonProgramWithId chooseLessonProgramRequest){
         // bu kisimn servicede yazilirsa daha iyi olur
-        String username = (String) request.getAttribute("username");
+       // String username = (String) request.getAttribute("username");
+        String username = httpServletRequest.getHeader("username");
         return studentService.chooseLesson(username,chooseLessonProgramRequest);
     }
     // Not : getAllStudentByAdvisorId() ********************************************
@@ -103,7 +104,8 @@ public class StudentController {
     @GetMapping("/getAllByAdvisorId")
     public List<StudentResponse>  getAllByAdvisorId(HttpServletRequest request) {
 
-        String username = (String) request.getAttribute("username");
+        //String username = (String) request.getAttribute("username");
+        String username = request.getHeader("username");
         return studentService.getAllStudentByTeacher_Username(username);
     }
 

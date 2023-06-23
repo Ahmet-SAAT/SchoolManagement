@@ -306,4 +306,8 @@ public class StudentService {
     }
 
 
+    public Set<Student> getStudentByIds(List<Long> studentIds){
+        return studentRepository.findByIdsEquals(studentIds);
+    }
+
 }

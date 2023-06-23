@@ -1,12 +1,10 @@
 package com.schoolmanagement.service;
-import com.schoolmanagement.entity.concretes.EducationTerm;
-import com.schoolmanagement.entity.concretes.Lesson;
-import com.schoolmanagement.entity.concretes.LessonProgram;
-import com.schoolmanagement.entity.concretes.Teacher;
+import com.schoolmanagement.entity.concretes.*;
 import com.schoolmanagement.exception.BadRequestException;
 import com.schoolmanagement.exception.ResourceNotFoundException;
 import com.schoolmanagement.payload.dto.LessonProgramDto;
 import com.schoolmanagement.payload.request.LessonProgramRequest;
+import com.schoolmanagement.payload.request.LessonProgramRequestForUpdated;
 import com.schoolmanagement.payload.response.LessonProgramResponse;
 import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.payload.response.TeacherResponse;
@@ -36,6 +34,8 @@ public class LessonProgramService {
     private final LessonProgramDto lessonProgramDto;
     private final EducationTermService educationTermService;
     private final CreateResponseObjectForService createResponseObjectForService;
+    private final StudentService studentService;
+    private final TeacherService teacherService;
 
 
     // Not :  Save() *************************************************************************
@@ -230,4 +230,51 @@ public class LessonProgramService {
 
         return lessonProgramRepository.getLessonProgramByLessonProgramIdList(lessonIdList);
     }
+
+
+    // Not: update()*****************************************************************************
+    public ResponseMessage<LessonProgramResponse> update(Long lessonProgramId,LessonProgramRequestForUpdated  lessonProgramRequest) {
+
+        LessonProgram lessonProgram = lessonProgramRepository.findById(lessonProgramId).orElseThrow(()->
+                new ResourceNotFoundException(Messages.LESSON_PROGRAM_NOT_FOUND_MESSAGE));
+
+        Set<Lesson> lessons = lessonService.getLessonByLessonIdList(lessonProgramRequest.getLessonIdList());
+        EducationTerm educationTerm =  educationTermService.getById(lessonProgramRequest.getEducationTermId());
+
+        // !!! yukarda gelen lessons ici bos degilse zaman kontrolu yapiliyor :
+        if(lessons.size()==0) {
+            throw new ResourceNotFoundException(Messages.NOT_FOUND_LESSON_IN_LIST);
+        } else if(TimeControl.check(lessonProgramRequest.getStartTime(), lessonProgramRequest.getStopTime())) {
+            throw new BadRequestException(Messages.TIME_NOT_VALID_MESSAGE);
+        }
+
+        // !!! Ogrenci bilgileri guncellenecek
+        if(lessonProgramRequest.getStudentIdList() != null && !lessonProgramRequest.getStudentIdList().isEmpty()){
+            Set<Student> students = studentService.getStudentByIds(lessonProgramRequest.getStudentIdList());
+            lessonProgram.setStudents(students);
+        }
+        // !!! Ogretmen bilgileri guncelleniyor
+
+        if(lessonProgramRequest.getTeacherIdList() != null && !lessonProgramRequest.getTeacherIdList().isEmpty()){
+            Set<Teacher> teachers = teacherService.getTeacherByIds(lessonProgramRequest.getTeacherIdList());
+            lessonProgram.setTeachers(teachers);
+        }
+        lessonProgram.setLesson(lessons);
+        lessonProgram.setDay(lessonProgramRequest.getDay());
+        lessonProgram.setEducationTerm(educationTerm);
+        lessonProgram.setStartTime(lessonProgramRequest.getStartTime());
+        lessonProgram.setStopTime(lessonProgramRequest.getStopTime());
+
+        LessonProgram savedLessonProgram = lessonProgramRepository.save(lessonProgram);
+
+        return ResponseMessage.<LessonProgramResponse>builder()
+                .message("LessonProgram updated Successfully")
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+
+
+
+
 }

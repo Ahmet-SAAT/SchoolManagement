@@ -33,7 +33,8 @@ public class MeetController {
     @PostMapping("save")
     public ResponseMessage<MeetResponse> save(HttpServletRequest httpServletRequest, @RequestBody MeetRequestWithoutId meetRequest)
     {
-      String username =(String) httpServletRequest.getAttribute("username");
+    //  String username =(String) httpServletRequest.getAttribute("username");
+        String username = httpServletRequest.getHeader("username");
         return meetService.save(username,meetRequest);
     }
 
@@ -62,7 +63,8 @@ public class MeetController {
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size
     ){
-        String username = (String) httpServletRequest.getAttribute("username");
+       // String username = (String) httpServletRequest.getAttribute("username");
+        String username = httpServletRequest.getHeader("username");
         Pageable pageable = PageRequest.of(page,size, Sort.by("date").descending());
         Page<MeetResponse> meet = meetService.getAllMeetByAdvisorTeacherAsPage(username,pageable);
         return ResponseEntity.ok(meet);
@@ -74,7 +76,8 @@ public class MeetController {
     @GetMapping("/getAllMeetByAdvisorTeacherAsList")
     public ResponseEntity<List<MeetResponse>> getAllMeetByAdvisorTeacherAsList(HttpServletRequest httpServletRequest){
 
-        String username = (String) httpServletRequest.getAttribute("username");
+        //String username = (String) httpServletRequest.getAttribute("username");
+        String username = httpServletRequest.getHeader("username");
         List<MeetResponse> meet = meetService.getAllMeetByAdvisorTeacherAsList(username);
         return ResponseEntity.ok(meet);
     }
@@ -98,7 +101,8 @@ public class MeetController {
     @PreAuthorize("hasAnyAuthority('STUDENT')")
     @GetMapping("/getAllMeetByStudent")
     public List<MeetResponse> getAllMeetByStudent(HttpServletRequest httpServletRequest){
-        String username = (String) httpServletRequest.getAttribute("username");
+        //String username = (String) httpServletRequest.getAttribute("username");
+        String username = httpServletRequest.getHeader("username");
         return meetService.getAllMeetByStudentByUsername(username);
     }
 

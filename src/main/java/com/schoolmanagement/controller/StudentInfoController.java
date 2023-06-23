@@ -32,7 +32,8 @@ public class StudentInfoController {
     public ResponseMessage<StudentInfoResponse> save(HttpServletRequest httpServletRequest,
                                                      @RequestBody @Valid StudentInfoRequestWithoutTeacherId studentInfoRequestWithoutTeacherId) {
 
-        String username = (String) httpServletRequest.getAttribute("username");
+        //String username = (String) httpServletRequest.getAttribute("username");
+        String username = httpServletRequest.getHeader("username");
         return studentInfoService.save(username, studentInfoRequestWithoutTeacherId);
 
     }
@@ -78,8 +79,8 @@ public class StudentInfoController {
     ) {
         // Pageable obje olusturma islemini Service katinda yazilmasi best-practice
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        String username = (String) httpServletRequest.getAttribute("username");
-
+       // String username = (String) httpServletRequest.getAttribute("username");
+        String username = httpServletRequest.getHeader("username");
         Page<StudentInfoResponse> studentInfoResponse = studentInfoService.getAllTeacher(username, pageable);
 
         return new ResponseEntity<>(studentInfoResponse, HttpStatus.OK); // ResponseEntity.ok(studentInfoResponse);
@@ -98,8 +99,8 @@ public class StudentInfoController {
     ) {
         // Pageable obje olusturma islemini Service katinda yazilmasi best-practice
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        String username = (String) httpServletRequest.getAttribute("username");
-
+       // String username = (String) httpServletRequest.getAttribute("username");
+        String username = httpServletRequest.getHeader("username");
         Page<StudentInfoResponse> studentInfoResponse = studentInfoService.getAllStudentInfoByStudent(username, pageable);
 
         return ResponseEntity.ok(studentInfoResponse);
